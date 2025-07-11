@@ -1,4 +1,4 @@
-const { knex } = require('./utils/migrations');
+const { knex } = require('./utils/test_utils');
 
 module.exports = async () => {
   console.log('Running Knex migrations for tests...');
