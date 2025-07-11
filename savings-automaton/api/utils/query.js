@@ -1,4 +1,4 @@
-import { parseDatabaseUrl } from './parse_db_url';
+const { parseDatabaseUrl } = require('./parse_db_url');
 
 const dbUrl = process.env.DATABASE_URL;
 const parsedUrl = parseDatabaseUrl(dbUrl);
