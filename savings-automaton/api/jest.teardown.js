@@ -1,5 +1,5 @@
-const knex = require('./jest.db_utils');
+const session = require('./utils/db_session');
 
 module.exports = async () => {
-  await knex.destroy();
+  await session.destroy();
 };
