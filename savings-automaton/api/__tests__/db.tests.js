@@ -1,4 +1,4 @@
-const { parseDatabaseUrl } = require('../utils/parse_db_url');
+const { parseDatabaseUrl } = require('../utils/db_utils');
 
 describe('parseDatabaseUrl', () => {
   test('should parse a PostgreSQL URL correctly', () => {
@@ -31,7 +31,7 @@ describe('parseDatabaseUrl', () => {
     const url = 'sqlite:///tmp/test.sqlite';
     const result = parseDatabaseUrl(url);
     expect(result).toEqual({
-      driver: 'sqlite',
+      driver: 'sqlite3',
       user: null,
       password: null,
       host: null,
@@ -40,16 +40,29 @@ describe('parseDatabaseUrl', () => {
     });
   });
 
-  test('should handle missing username and password', () => {
-    const url = 'postgres://localhost:5432/mydb';
+  test('should parse a SQLite URL (memory-based)', () => {
+    const url = 'sqlite3:///file::memory:?cache=shared';
     const result = parseDatabaseUrl(url);
     expect(result).toEqual({
-      driver: 'postgres',
+      driver: 'sqlite3',
       user: null,
       password: null,
-      host: 'localhost',
-      port: '5432',
-      database: 'mydb',
+      host: null,
+      port: null,
+      database: 'file::memory:?cache=shared',
+    });
+  });
+
+  test('should parse a SQLite URL (memory-based)', () => {
+    const url = 'sqlite3:///file:memDb1?mode=memory&cache=shared';
+    const result = parseDatabaseUrl(url);
+    expect(result).toEqual({
+      driver: 'sqlite3',
+      user: null,
+      password: null,
+      host: null,
+      port: null,
+      database: 'file:memDb1?mode=memory&cache=shared',
     });
   });
 

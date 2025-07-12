@@ -1,4 +1,4 @@
-const { knex } = require('./utils/test_utils');
+const knex = require('./jest.db_utils');
 
 module.exports = async () => {
   await knex.destroy();

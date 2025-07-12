@@ -13,12 +13,10 @@ app.post('/savings', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields' });
   }
   // Stub: simulate DB save
-  res
-    .status(201)
-    .json({
-      message: 'Savings schedule created',
-      data: { userId, amount, frequency },
-    });
+  res.status(201).json({
+    message: 'Savings schedule created',
+    data: { userId, amount, frequency },
+  });
 });
 
 module.exports = app;
