@@ -7,5 +7,5 @@ class SavingLog extends Model {
 }
 
 module.exports = {
-  User,
+  SavingLog,
 };
