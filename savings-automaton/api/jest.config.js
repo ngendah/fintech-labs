@@ -9,5 +9,5 @@ module.exports = {
 
 // Set environment variables globally
 process.env = Object.assign(process.env, {
-  DATABASE_URL: 'sqlite3:///:memory:',
+  DATABASE_URL: 'sqlite3:///file::memory:?cache=shared',
 });
