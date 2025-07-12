@@ -3,4 +3,4 @@
 export DATABASE_URL
 npx knex migrate:latest
 npx knex seed:run
-npm run start
+npm run start:all
