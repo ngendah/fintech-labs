@@ -1,7 +1,12 @@
 const express = require('express');
-const { query } = require('./utils/query');
+const { Model } = require('objection');
+const { User } = require('./models/user');
+const { SavingSchedule } = require('./models/saving_schedule');
+const db_session = require('./utils/db_session');
 const app = express();
 app.use(express.json());
+
+Model.knex(db_session);
 
 app.get('/', (req, res) => {
   res.send('Savings API is running');
@@ -12,7 +17,22 @@ app.post('/savings', async (req, res) => {
   if (!userId || !amount || !frequency) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
-  // Stub: simulate DB save
+
+  const user = await User.query().findById(userId);
+  if (!user) {
+    return res.status(400).json({ error: 'User does not exist' });
+  }
+
+  const saving_schedule = await SavingSchedule.query().insertGraph({
+    user_id: userId,
+    amount,
+    frequency,
+  });
+
+  if (!saving_schedule) {
+    return res.status(500).json({ error: 'An error occurred' });
+  }
+
   res.status(201).json({
     message: 'Savings schedule created',
     data: { userId, amount, frequency },
