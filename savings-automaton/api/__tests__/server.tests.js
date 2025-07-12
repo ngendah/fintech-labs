@@ -10,7 +10,7 @@ describe('Savings API', () => {
 
   test('POST /savings with valid data should return 201', async () => {
     const data = {
-      userId: 'user123',
+      userId: '1',
       amount: 50,
       frequency: 'weekly',
     };
