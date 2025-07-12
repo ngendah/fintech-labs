@@ -68,7 +68,6 @@ function knexConnection(databaseUrl) {
       connection: {
         filename: parsedUrl.database,
         ...credentials,
-        flags: ['OPEN_URI', 'OPEN_SHAREDCACHE'],
       },
     };
   }
