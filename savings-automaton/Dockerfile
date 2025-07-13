@@ -1,4 +1,4 @@
-FROM node:24-bookworm
+FROM node:24-slim
 RUN set -ex \
     && addgroup --system fintech-labs \
     && adduser --system --ingroup fintech-labs fintech-labs
