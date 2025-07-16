@@ -1,0 +1,85 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: savings-automaton-db-secret
+type: Opaque
+data:
+  # Base64 encoded PostgreSQL connection string (e.g., echo -n 'postgres://user:pass@host:5432/dbname' | base64)
+  DB_DATABASE_URL: cG9zdGdyZXM6Ly91c2VyOnBhc3NAbG9jYWxob3N0OjU0MzIvbXlkYg== # REPLACE THIS WITH YOUR ACTUAL BASE64 ENCODED DATABASE_URL
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: savings-automaton-deployment
+  labels:
+    app: savings-automaton
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: savings-automaton
+  template:
+    metadata:
+      labels:
+        app: savings-automaton
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        fsGroup: 1000
+      containers:
+        - name: savings-automaton
+          image: savings-automaton:latest
+          ports:
+            - containerPort: 3000
+              name: http-server
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: savings-automaton-db-secret
+                  key: DB_DATABASE_URL
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http-server
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http-server
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: savings-automaton-service
+  labels:
+    app: savings-automaton
+spec:
+  selector:
+    app: savings-automaton
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http-server
+  type: ClusterIP
