@@ -257,12 +257,11 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# Data source to get the latest Ubuntu 20.04 LTS AMI
-data "aws_ami" "ubuntu_focal" {
+data "aws_ami" "ubuntu_jammy" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
   filter {
     name   = "virtualization-type"
@@ -273,7 +272,7 @@ data "aws_ami" "ubuntu_focal" {
 
 resource "aws_launch_template" "web_lt" {
   name_prefix   = "web-server-lt-"
-  image_id      = data.aws_ami.ubuntu_focal.id
+  image_id      = data.aws_ami.ubuntu_jammy.id
   instance_type = "t2.micro" # Free-tier eligible
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   iam_instance_profile {
@@ -538,7 +537,7 @@ resource "aws_security_group" "bastion_sg" {
 
 # EC2 Bastion Host in private_1 subnet
 resource "aws_instance" "bastion_host" {
-  ami                         = data.aws_ami.ubuntu_focal.id
+  ami                         = data.aws_ami.ubuntu_jammy.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.private_1.id
   associate_public_ip_address = false # No public IP, access via Session Manager
