@@ -7,20 +7,20 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 ## 🚀 Project Highlights
 
 ### 1. Infrastructure as Code (IaC) for Fintech App
-**Folder**: `terraform-infra/`
+**Folder**: [terraform-infra](./terraform-infra/)
 - Modular AWS setup using Terraform (VPC, RDS, S3)
 - Simulated secure setup for backend fintech systems
 - State management and Secrets handling
 
 ### 2. Automated Savings Microservice
-**Folder**: `savings-automaton/`
+**Folder**: [savings-automaton](./savings-automaton/)
 - Backend logic to simulate recurring savings schedules
 - RESTful API built in Node.js with PostgreSQL
 - Dockerized and ready for cloud deployment
 - Kubernetes manifest for deployment (local or on cloud)
 
 ### 3. Monitoring & Alerts for Cloud Apps
-**Folder**: `ops-monitoring/`
+**Folder**: [ops-monitoring](./ops-monitoring/)
 - Real-time dashboards for service health
 - Custom alerts for latency, CPU, or payment failures
 - Simulated logs or fake payment traffic using a script
