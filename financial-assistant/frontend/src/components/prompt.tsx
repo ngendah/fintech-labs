@@ -8,34 +8,37 @@ import {
 } from '@/components/ui/prompt-input'
 import { Button } from '@/components/ui/button'
 import { ArrowUp, Square } from 'lucide-react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export function Prompt({
     defaultPrompt = 'Ask me anything...',
+    onSubmit,
 }: {
     defaultPrompt?: string
+    onSubmit?: (value: string) => void
 }) {
     const [input, setInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.stopPropagation()
+        if (event) {
+            event.stopPropagation()
+        }
         setIsLoading(true)
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 2000)
+        if (onSubmit) {
+            onSubmit(input)
+        }
+        setIsLoading(false)
     }
-
     const handleValueChange = (value: string) => {
         setInput(value)
     }
-
     return (
         <PromptInput
             value={input}
             onValueChange={handleValueChange}
             isLoading={isLoading}
-            onSubmit={() => handleSubmit}
+            onSubmit={handleSubmit}
             className="w-full mr-2 ml-2 max-w-(--breakpoint-md)"
         >
             <PromptInputTextarea placeholder={defaultPrompt} />
@@ -47,7 +50,7 @@ export function Prompt({
                         variant="default"
                         size="icon"
                         className="h-8 w-8 rounded-full"
-                        onClick={() => handleSubmit}
+                        onClick={handleSubmit}
                     >
                         {isLoading ? (
                             <Square className="size-5 fill-current" />
