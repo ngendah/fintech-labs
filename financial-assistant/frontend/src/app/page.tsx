@@ -37,11 +37,11 @@ export default function Home() {
 
     return (
         <>
-            <nav className="flex flex-row items-center mt-4 mr-12 ml-12">
+            <nav className="fixed top w-full flex flex-row items-center pt-4 pb-4 pl-12 bg-background">
                 <div className="text-lg font-bold mr-6">FinTech-Labs</div>
                 <ModeToggle />
             </nav>
-            <ScrollableContainer>
+            <ScrollableContainer className="pt-[10vh]">
                 {messages.map((message) =>
                     message.role === 'user' ? (
                         <QueryMessage
@@ -56,6 +56,7 @@ export default function Home() {
                     )
                 )}
                 {isLoading ? <ResponseLoading /> : <></>}
+                <div className="h-[15rem]"></div>
             </ScrollableContainer>
             <div className="fixed bottom-[10vh] w-full justify-items-center">
                 <Prompt
