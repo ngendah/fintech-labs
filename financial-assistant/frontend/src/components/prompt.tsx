@@ -40,16 +40,20 @@ export function Prompt({
             onSubmit={handleSubmit}
             className="w-full mr-2 ml-2 max-w-(--breakpoint-md)"
         >
-            <PromptInputTextarea placeholder={defaultPrompt} />
+            <PromptInputTextarea
+                placeholder={defaultPrompt}
+                disabled={isLoading}
+            />
             <PromptInputActions className="justify-end pt-2">
                 <PromptInputAction
                     tooltip={isLoading ? 'Stop generation' : 'Send message'}
+                    disabled={isLoading}
                 >
                     <Button
                         variant="default"
                         size="icon"
                         className="h-8 w-8 rounded-full"
-                        onClick={handleSubmit}
+                        onClick={isLoading ? () => {} : handleSubmit}
                     >
                         {isLoading ? (
                             <Square className="size-5 fill-current" />
