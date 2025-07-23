@@ -3,15 +3,21 @@
 import { Prompt } from '@/components/prompt'
 import { useEffect, useState } from 'react'
 import { ScrollableContainer } from '@/components/scrollable-container'
-import { QueryMessage, ResponseMessage } from '@/components/message'
+import {
+    QueryMessage,
+    ResponseMessage,
+    ResponseLoading,
+} from '@/components/message'
 import { ModeToggle } from '@/components/mode-toggle'
 import { useWebSocket } from '@/components/web-socket'
 
 export default function Home() {
+    const [isLoading, setIsLoading] = useState(false)
     const { socket } = useWebSocket()
     const [messages, setMessage] = useMessageMap()
-    const onSubmit = async (value: string) => {
+    const onSubmit = (value: string) => {
         if (socket == null) return
+        setIsLoading(true)
         const message = new Message(Date.now(), 'user', value)
         socket.send(message.toJson())
         setMessage(message)
@@ -19,6 +25,7 @@ export default function Home() {
     useEffect(() => {
         if (!socket) return
         const handleMessage = (event: MessageEvent) => {
+            setIsLoading(false)
             const message = Message.fromJson(JSON.parse(event.data))
             setMessage(message)
         }
@@ -48,11 +55,13 @@ export default function Home() {
                         />
                     )
                 )}
+                {isLoading ? <ResponseLoading /> : <></>}
             </ScrollableContainer>
             <div className="fixed bottom-[10vh] w-full justify-items-center">
                 <Prompt
                     defaultPrompt="Ask me about Safaricom Financial performance for 2024 ..."
                     onSubmit={onSubmit}
+                    isLoading={isLoading}
                 />
             </div>
         </>

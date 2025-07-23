@@ -13,22 +13,21 @@ import React, { useState } from 'react'
 export function Prompt({
     defaultPrompt = 'Ask me anything...',
     onSubmit,
+    isLoading = false,
 }: {
     defaultPrompt?: string
     onSubmit?: (value: string) => void
+    isLoading: bool
 }) {
     const [input, setInput] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event) {
             event.stopPropagation()
         }
-        setIsLoading(true)
         if (onSubmit) {
             onSubmit(input)
         }
-        setIsLoading(false)
     }
     const handleValueChange = (value: string) => {
         setInput(value)

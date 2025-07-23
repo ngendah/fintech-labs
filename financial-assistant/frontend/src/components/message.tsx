@@ -1,6 +1,7 @@
 'use client'
 
 import { Message, MessageContent } from '@/components/ui/message'
+import { Loader } from '@/components/ui/loader'
 import React from 'react'
 
 function QueryMessage({ message }: { message: string }) {
@@ -21,4 +22,12 @@ function ResponseMessage({ message }: { message: string }) {
     )
 }
 
-export { QueryMessage, ResponseMessage }
+function ResponseLoading() {
+    return (
+        <Message className="justify-start">
+            <Loader variant="dots" size="md" />
+        </Message>
+    )
+}
+
+export { QueryMessage, ResponseMessage, ResponseLoading }
