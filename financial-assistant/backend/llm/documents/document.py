@@ -1,33 +1,33 @@
 from typing import List, Union
 
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
-from llama_index.core.base.base_query_engine import BaseQueryEngine
 from llama_index.core.tools import QueryEngineTool
 from llama_index.readers.web import SimpleWebPageReader
-from pydantic import BaseModel, FileUrl, HttpUrl
+from pydantic import BaseModel, Field, FileUrl, HttpUrl
 
-from backend.llm.providers.provider import Provider
+from llm.providers.provider import Provider
 
 
 class Document(BaseModel):
-    name: str
+    name: str = Field(pattern=r"^[A-Za-z]\w{2,}_\d+$")
     description: str
     sources: List[Union[FileUrl, HttpUrl]]
-    download_dir: str = ".tmp/downloads"
+    similarity_top_k: int = Field(default=3)
 
     def docs(self, provider: Provider) -> VectorStoreIndex:
-        docs = [*self._files, *self._web_pages, *self._web_pdf]
+        docs = [*self._files, *self._web_pages]
         return VectorStoreIndex.from_documents(
             docs,
             embed_model=provider.embed_model(),
         )
 
-    def query_engine(self, provider: Provider) -> BaseQueryEngine:
+    def query_engine(self, provider: Provider):
         return self.docs(provider).as_query_engine(
-            llm=provider.model(), similarity_top_k=3
+            llm=provider.model(),
+            similarity_top_k=self.similarity_top_k,
         )
 
-    def query_tool(self, provider: Provider):
+    def query_engine_tool(self, provider: Provider):
         return QueryEngineTool.from_defaults(
             query_engine=self.query_engine(provider),
             name=self.name,

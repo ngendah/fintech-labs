@@ -4,8 +4,8 @@ from langchain_ollama.embeddings import (
 from llama_index.embeddings.ollama import OllamaEmbedding
 from llama_index.llms.ollama import Ollama
 
-from backend.llm.config import LLMConfig
-from backend.llm.providers.provider import Provider
+from llm.config import LLMConfig
+from llm.providers.provider import Provider
 
 
 class OllamaProvider(Provider):

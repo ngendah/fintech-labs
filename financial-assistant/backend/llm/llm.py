@@ -25,7 +25,7 @@ class LLM(BaseModel):
     config: LLMConfig = Field()
     documents: List[Document] = Field()
     tools: List = Field(default=[])
-    _engine: object | None = None
+    verbose: bool = Field(default=False)
 
     @property
     def provider(self) -> Provider:
@@ -38,20 +38,17 @@ class LLM(BaseModel):
     def react_agent(self):
         provider = self.provider
         return ReActAgent(
-            tools=self.query_tools(provider),
+            tools=self.agent_tools(provider),
             llm=provider.model(),
+            verbos=self.verbose,
         )
 
-    def query_tools(self, provider: Provider) -> List:
-        return [*self.tools, *[s.query_tool(provider) for s in self.documents]]
+    def agent_tools(self, provider: Provider) -> List:
+        return [s.query_engine_tool(provider) for s in self.documents]
 
-    def query_engine(self, clear_history: bool = False) -> _QueryEngine:
-        if self._engine and not clear_history:
-            return self._engine
-        agent = self.react_agent
-        self._engine = _QueryEngine(Context(agent), agent)
-        return self._engine
+    def model_post_init(self, __context) -> None:
+        self._agent = self.react_agent
+        self._context = Context(self._agent)
 
-    def query(self, query: str, clear_history: bool = False):
-        query_engine = self.query_engine(clear_history)
-        return query_engine.query(query=query)
+    def query(self, query: str):
+        return self._agent.run(query, ctx=self._context)

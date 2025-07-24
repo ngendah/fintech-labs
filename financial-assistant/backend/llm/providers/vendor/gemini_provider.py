@@ -2,8 +2,8 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
 
-from backend.llm.config import LLMConfig
-from backend.llm.providers.provider import Provider
+from llm.config import LLMConfig
+from llm.providers.provider import Provider
 
 
 class GeminiProvider(Provider):
