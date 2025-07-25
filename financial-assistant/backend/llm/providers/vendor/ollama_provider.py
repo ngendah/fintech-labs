@@ -1,6 +1,3 @@
-from langchain_ollama.embeddings import (
-    OllamaEmbeddings as LangChainOllamaEmbeddings,
-)
 from llama_index.embeddings.ollama import OllamaEmbedding
 from llama_index.llms.ollama import Ollama
 
@@ -20,6 +17,3 @@ class OllamaProvider(Provider):
             model=self.config.MODEL_NAME,
             request_timeout=self.config.TIMEOUT,
         )
-
-    def text_embed_model(self):
-        return LangChainOllamaEmbeddings(model=self.config.EMBED_MODEL)

@@ -12,7 +12,3 @@ class Provider(ABC):
     @abstractmethod
     def model(self) -> LLM:
         raise NotImplemented()
-
-    @abstractmethod
-    def text_embed_model(self):
-        raise NotImplemented()
