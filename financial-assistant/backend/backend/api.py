@@ -1,14 +1,15 @@
+import logging
 import os
+from datetime import datetime
 from pathlib import Path
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from llama_index.core.agent.workflow import AgentStream
-from pydantic import FileUrl
+from pydantic import BaseModel, Field, FileUrl, field_serializer
 
-from backend.llm.config import LLMConfig
-from backend.llm.documents.document import Document
-from backend.llm.llm import LLM
-from backend.llm.tools import tools
+from llm.config import LLMConfig
+from llm.llm import LLM, DataSource
+
+logger = logging.getLogger(__name__)
 
 enable_docs = os.getenv("ENABLE_DOCS", "false").lower() == "true"
 
@@ -19,30 +20,61 @@ app = (
 )
 
 
-@app.websocket("chat/")
+class Query(BaseModel):
+    id: datetime = Field()
+    role: str = Field()
+    content: str = Field(max_length=255)
+
+    @field_serializer("id")
+    def serialize_id(self, dt: datetime, _info) -> int:
+        return int(dt.timestamp() * 1000)
+
+
+class QueryResponse(Query):
+    has_error: bool = Field(default=False)
+    error: str | None = Field(default=None)
+
+
+@app.websocket("/chat")
 async def llm_chat(
     websocket: WebSocket,
 ):
     try:
         await websocket.accept()
-        file_path = Path.cwd() / Path(
-            ".tmp/downloads/2024-Annual-Report-Update.pdf"
+        data_source = DataSource(
+            name="financial_reports_2023_to_2024_for_safaricom_and_equity_bank",
+            description="Provides download urls for annual financial performance reports "
+                        "for the years 2023 to 2024, for Safaricom PLC and Equity Bank",
+            sources=[
+                FileUrl(
+                    (
+                        Path.cwd() / Path("financial_report_sources.json")
+                    ).as_uri()
+                )
+            ],
         )
-        documents = [
-            Document(
-                name="Safaricom Financials for 2024",
-                description="Provides information about Safaricom 2024 annual financial performance report for the year. "
-                "Use a detailed plain text question as input to the tool.",
-                sources=[FileUrl(file_path.as_uri())],
-            ),
-        ]
         config = LLMConfig()
-        llm = LLM(config=config, documents=documents, tools=tools)
+        llm = LLM(config=config, data_source=data_source, verbose=True)
         while True:
-            query = await websocket.receive_text()
-            handler = llm.query(query=query)
-            async for ev in handler.stream_events():
-                if isinstance(ev, AgentStream):
-                    await websocket.send_text(ev.response)
+            query_obj = await websocket.receive_json()
+            query = Query.model_validate(query_obj)
+            try:
+                handler = llm.query(query=query.content)
+                response = await handler
+                response = QueryResponse(
+                    id=query.id, role=query.role, content=str(response)
+                )
+                await websocket.send_json(response.model_dump_json())
+            except Exception as err:
+                logger.error(err)
+                err_response = QueryResponse(
+                    id=query.id,
+                    role="assistant",
+                    content="An error has occurred, while processing your request",
+                    has_error=True,
+                )
+                await websocket.send_json(err_response.model_dump())
     except WebSocketDisconnect:
         pass
+    except Exception as err:
+        websocket.close(code=0, reason="Internal server error")
