@@ -1,0 +1,33 @@
+# Node modules (reinstalled in Docker image)
+node_modules
+.npm
+.pnpm
+.yarn
+*.log
+
+# Build output
+.next
+out
+
+# Env and secrets
+.env
+.env.local
+.env.*.local
+
+# OS and editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
