@@ -17,7 +17,7 @@ export function Prompt({
 }: {
     defaultPrompt?: string
     onSubmit?: (value: string) => void
-    isLoading: bool
+    isLoading: boolean
 }) {
     const [input, setInput] = useState('')
 

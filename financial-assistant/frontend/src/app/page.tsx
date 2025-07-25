@@ -112,12 +112,5 @@ function useMessageMap(initial?: Map<string, Message>) {
             return next
         })
     }
-    const remove = (id: string) => {
-        setMap((prev) => {
-            const next = new Map(prev)
-            next.delete(next.key)
-            return next
-        })
-    }
-    return [Array.from(map.values()), set, remove]
+    return [Array.from(map.values()), set]
 }
