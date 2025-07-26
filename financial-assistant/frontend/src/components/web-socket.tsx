@@ -26,7 +26,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         let ws: WebSocket
         const setupWebSocket = async () => {
             try {
-                const chat_url: string | undefined =
+                const chat_url: string | undefined | null =
                     process.env.NEXT_PUBLIC_BACKEND_WS_CHAT
                 assertIsWebSocketUrl(chat_url)
                 if (!chat_url) {
@@ -70,8 +70,10 @@ class InvalidWebSocketUrlError extends Error {
     }
 }
 
-function assertIsWebSocketUrl(urlStr: string): void {
+function assertIsWebSocketUrl(urlStr: string | undefined | null): void {
     let url: URL
+    if (!urlStr)
+        throw new InvalidWebSocketUrlError(`Invalid URL syntax: "${urlStr}"`)
     try {
         url = new URL(urlStr)
     } catch {

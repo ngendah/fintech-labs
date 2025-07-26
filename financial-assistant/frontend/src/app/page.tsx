@@ -103,7 +103,9 @@ class Message {
     }
 }
 
-function useMessageMap(initial?: Map<string, Message>) {
+function useMessageMap(
+    initial?: Map<string, Message>
+): [Message[], (message: Message) => void] {
     const [map, setMap] = useState(initial ?? new Map())
     const set = (msg: Message) => {
         setMap((prev) => {

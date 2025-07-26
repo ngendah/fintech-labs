@@ -21,10 +21,7 @@ export function Prompt({
 }) {
     const [input, setInput] = useState('')
 
-    const handleSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event) {
-            event.stopPropagation()
-        }
+    const handleSubmit = () => {
         if (onSubmit) {
             onSubmit(input)
         }
@@ -47,13 +44,12 @@ export function Prompt({
             <PromptInputActions className="justify-end pt-2">
                 <PromptInputAction
                     tooltip={isLoading ? 'Stop generation' : 'Send message'}
-                    disabled={isLoading}
                 >
                     <Button
                         variant="default"
                         size="icon"
                         className="h-8 w-8 rounded-full"
-                        onClick={isLoading ? () => {} : handleSubmit}
+                        onClick={isLoading ? (evt) => {} : handleSubmit}
                     >
                         {isLoading ? (
                             <Square className="size-5 fill-current" />
