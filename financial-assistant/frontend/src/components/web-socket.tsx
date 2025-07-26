@@ -27,8 +27,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         const setupWebSocket = async () => {
             try {
                 const res = await fetch('config.json')
-                if(!res)
-                    throw new Error('Failed to load config.json')
+                if (!res) throw new Error('Failed to load config.json')
                 const config = await res.json()
                 const chat_url = config.chat_url
                 assertIsWebSocketUrl(chat_url)

@@ -14,16 +14,19 @@ export function Prompt({
     defaultPrompt = 'Ask me anything...',
     onSubmit,
     isLoading = false,
+    isDisabled = false,
 }: {
     defaultPrompt?: string
     onSubmit?: (value: string) => void
     isLoading: boolean
+    isDisabled: boolean
 }) {
     const [input, setInput] = useState('')
 
     const handleSubmit = () => {
         if (onSubmit) {
             onSubmit(input)
+            setInput('')
         }
     }
     const handleValueChange = (value: string) => {
@@ -39,7 +42,7 @@ export function Prompt({
         >
             <PromptInputTextarea
                 placeholder={defaultPrompt}
-                disabled={isLoading}
+                disabled={isLoading || isDisabled}
             />
             <PromptInputActions className="justify-end pt-2">
                 <PromptInputAction
@@ -50,6 +53,7 @@ export function Prompt({
                         size="icon"
                         className="h-8 w-8 rounded-full"
                         onClick={isLoading ? (evt) => {} : handleSubmit}
+                        disabled={isDisabled}
                     >
                         {isLoading ? (
                             <Square className="size-5 fill-current" />

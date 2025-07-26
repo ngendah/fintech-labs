@@ -15,7 +15,7 @@ function QueryMessage({ message }: { message: string }) {
 function ResponseMessage({ message }: { message: string }) {
     return (
         <Message className="justify-start">
-            <MessageContent className="mt-2 mb-2 bg-transparent">
+            <MessageContent className="mt-2 mb-2 bg-transparent text-justify">
                 {message}
             </MessageContent>
         </Message>
@@ -30,4 +30,14 @@ function ResponseLoading() {
     )
 }
 
-export { QueryMessage, ResponseMessage, ResponseLoading }
+function ErrorMessage({ message }: { message: string }) {
+    return (
+        <Message className="justify-start">
+            <MessageContent className="mt-2 mb-2 bg-red-300">
+                {message}
+            </MessageContent>
+        </Message>
+    )
+}
+
+export { QueryMessage, ResponseMessage, ResponseLoading, ErrorMessage }
