@@ -26,8 +26,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         let ws: WebSocket
         const setupWebSocket = async () => {
             try {
-                const chat_url: string | undefined | null =
-                    process.env.NEXT_PUBLIC_BACKEND_WS_CHAT
+                const res = await fetch('config.json')
+                if(!res)
+                    throw new Error('Failed to load config.json')
+                const config = await res.json()
+                const chat_url = config.chat_url
                 assertIsWebSocketUrl(chat_url)
                 if (!chat_url) {
                     throw new Error('Backend chat socket is not provided')
