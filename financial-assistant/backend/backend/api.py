@@ -31,6 +31,8 @@ class Query(BaseModel):
 
 
 class QueryResponse(Query):
+    role: str = Field(default="assistant")
+    content: str = Field()
     has_error: bool = Field(default=False)
     error: str | None = Field(default=None)
 
@@ -62,14 +64,13 @@ async def llm_chat(
                 handler = llm.query(query=query.content)
                 response = await handler
                 response = QueryResponse(
-                    id=query.id, role=query.role, content=str(response)
+                    id=query.id, content=str(response)
                 )
-                await websocket.send_json(response.model_dump_json())
+                await websocket.send_json(response.model_dump())
             except Exception as err:
                 logger.error(err)
                 err_response = QueryResponse(
                     id=query.id,
-                    role="assistant",
                     content="An error has occurred, while processing your request",
                     has_error=True,
                 )
