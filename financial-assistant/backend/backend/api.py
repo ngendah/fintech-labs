@@ -44,7 +44,7 @@ async def llm_chat(
         data_source = DataSource(
             name="financial_reports_2023_to_2024_for_safaricom_and_equity_bank",
             description="Provides download urls for annual financial performance reports "
-                        "for the years 2023 to 2024, for Safaricom PLC and Equity Bank",
+            "for the years 2023 to 2024, for Safaricom PLC and Equity Bank",
             sources=[
                 FileUrl(
                     (

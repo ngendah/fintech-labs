@@ -8,9 +8,9 @@ from llama_index.core.tools import FunctionTool, QueryEngineTool
 from llama_index.readers.web import SimpleWebPageReader
 from pydantic import BaseModel, Field, FileUrl, HttpUrl
 
-from .config import LLMConfig
-from .providers.providers import Provider, Providers
-from .tools.download_pdf import download_pdfs
+from llm.config import LLMConfig
+from llm.providers.providers import Provider, Providers
+from llm.tools.download_pdf import download_pdfs
 
 logger = logging.getLogger(__name__)
 
