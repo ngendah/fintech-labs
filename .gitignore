@@ -2,6 +2,9 @@
 node_modules/
 coverage/
 testing/
+.env*
+**/*/__pycache__/
+**/*/.tmp/
 # Local .terraform directories
 **/.terraform/*
 
