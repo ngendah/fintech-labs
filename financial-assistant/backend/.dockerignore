@@ -19,7 +19,6 @@ ENV/
 *.swo
 *.bak
 *.tmp
-README*
 
 # Docker
 Dockerfile
