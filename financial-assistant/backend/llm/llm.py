@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, FileUrl, HttpUrl
 
 from llm.config import LLMConfig
 from llm.providers.providers import Provider, Providers
-from llm.tools.download_pdf import download_pdfs
+from llm.tools.retrieve_pdf import retrieve_pdfs
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class DataSource(BaseModel):
             llm=provider.model(),
             output_cls=DownloadUrls,
             response_mode="compact",
-            system_prompt="You resolve company names and years to financial report download URLs.",
+            system_prompt="You resolve company names and years to financial documents download URLs.",
         )
         return query_engine
 
@@ -61,7 +61,7 @@ class DataSource(BaseModel):
 
 
 class Agents(Enum):
-    DOWNLOAD_AGENT = 1
+    DOCUMENT_AGENT = 1
     ANALYST_AGENT = 2
 
 
@@ -78,22 +78,23 @@ class LLM(BaseModel):
         return provider.value(self.config)
 
     @property
-    def download_agent(self):
+    def document_agent(self):
         provider = self.provider
         system_prompt = """
-       Your job is to help retrieve financial reports. 
-       You are equipped with tools to resolve document source URLs and retrieve or downloads files on those URLs.
-       Use them in sequence to obtain the required files.
+        Your job is to Retrieve the correct financial documents (e.g. annual reports) based on the provided company name and year.
+        Use tools to search, retrieve, and return the file URLs of the documents.
         """
-        description = "Query for document download urls and retrieve or download the documents"
+        description = (
+            "Locate and retrieve financial documents based on company and year"
+        )
         return FunctionAgent(
-            name=Agents.DOWNLOAD_AGENT.name,
+            name=Agents.DOCUMENT_AGENT.name,
             llm=provider.model(),
             description=description,
-            tools=[self.data_source.query_tool(provider), download_pdfs],
+            tools=[self.data_source.query_tool(provider), retrieve_pdfs],
             system_prompt=system_prompt,
-            verbose=self.verbose,
             can_handoff_to=[Agents.ANALYST_AGENT.name],
+            verbose=self.verbose,
         )
 
     @property
@@ -103,7 +104,7 @@ class LLM(BaseModel):
         def analysis_tool(
             file_paths: List[str], question: Optional[str] = None
         ) -> str:
-            """Load and analyze PDFs, then answer the question or summarize."""
+            """Analyze, summarize or compare financial reports. Your inputs should be file_paths to the reports and question"""
             documents = SimpleDirectoryReader(
                 input_files=file_paths
             ).load_data()
@@ -123,9 +124,11 @@ class LLM(BaseModel):
     def analyst_agent(self):
         provider = self.provider
         system_prompt = """
-        You are a helpful assistant for analyzing companies financial reports.
+        You are a helpful assistant for analyzing, summarizing or comparing companies financial reports.
         """
-        description = "Analyze companies financial reports"
+        description = (
+            "Analyze, summarize or compare companies financial reports"
+        )
         return FunctionAgent(
             name=Agents.ANALYST_AGENT.name,
             llm=provider.model(),
@@ -139,11 +142,8 @@ class LLM(BaseModel):
 
     def model_post_init(self, context: Any, /) -> None:
         self._workflow = AgentWorkflow(
-            agents=[self.download_agent, self.analyst_agent],
-            root_agent=Agents.DOWNLOAD_AGENT.name,
-            initial_state={
-                "file_paths": {},
-            },
+            agents=[self.document_agent, self.analyst_agent],
+            root_agent=Agents.DOCUMENT_AGENT.name,
         )
 
     def query(self, query: str):

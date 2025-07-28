@@ -6,6 +6,7 @@ from pathlib import Path
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field, FileUrl, field_serializer
 
+from llm.agent_logger import agent_logging
 from llm.config import LLMConfig
 from llm.llm import LLM, DataSource
 
@@ -62,10 +63,9 @@ async def llm_chat(
             query = Query.model_validate(query_obj)
             try:
                 handler = llm.query(query=query.content)
+                await agent_logging(handler)
                 response = await handler
-                response = QueryResponse(
-                    id=query.id, content=str(response)
-                )
+                response = QueryResponse(id=query.id, content=str(response))
                 await websocket.send_json(response.model_dump())
             except Exception as err:
                 logger.error(err)
