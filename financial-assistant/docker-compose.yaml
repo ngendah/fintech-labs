@@ -1,0 +1,15 @@
+services:
+  backend:
+    image: financial-assistant-backend
+    build:
+      context: backend
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+  frontend:
+    image: financial-assistant-frontend
+    build:
+      context: frontend
+    ports:
+      - 3000:3000

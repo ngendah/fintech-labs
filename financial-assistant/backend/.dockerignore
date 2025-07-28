@@ -1,0 +1,45 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+env*
+.env
+.venv/
+venv/
+ENV/
+
+# Git & local dev
+.git/
+.gitignore
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Tests
+tests/
+.coverage
+htmlcov/
+*.cover
+coverage.xml
+pytest_cache/
+
+# Logs
+*.log
+
+# IDE/editor
+.vscode/
+.idea/
+*.iml
+
+# OS generated
+.DS_Store
+Thumbs.db
