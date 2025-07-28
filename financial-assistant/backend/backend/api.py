@@ -57,7 +57,7 @@ async def llm_chat(
             ],
         )
         config = LLMConfig()
-        llm = LLM(config=config, data_source=data_source, verbose=True)
+        llm = LLM(config=config, document_source=data_source, verbose=True)
         while True:
             query_obj = await websocket.receive_json()
             query = Query.model_validate(query_obj)

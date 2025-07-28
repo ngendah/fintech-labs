@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Any, List, Optional, Union
 
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
-from llama_index.core.agent.workflow import AgentWorkflow, FunctionAgent
+from llama_index.core.agent.workflow import AgentWorkflow, FunctionAgent, ReActAgent
 from llama_index.core.tools import FunctionTool, QueryEngineTool
 from llama_index.readers.web import SimpleWebPageReader
 from pydantic import BaseModel, Field, FileUrl, HttpUrl
@@ -47,7 +47,12 @@ class DataSource(BaseModel):
             llm=provider.model(),
             output_cls=DownloadUrls,
             response_mode="compact",
-            system_prompt="You resolve company names and years to financial documents download URLs.",
+            system_prompt=(
+                "Only resolve each company name and year to a download URL. "
+                "Do not rely on prior knowledge. "
+                "Do not invent. "
+                "Do not guess. "
+            ),
         )
         return query_engine
 
@@ -61,13 +66,14 @@ class DataSource(BaseModel):
 
 
 class Agents(Enum):
-    DOCUMENT_AGENT = 1
-    ANALYST_AGENT = 2
+    CONCIERGE_AGENT = 1
+    DOCUMENT_AGENT = 2
+    ANALYST_AGENT = 3
 
 
 class LLM(BaseModel):
     config: LLMConfig = Field()
-    data_source: DataSource = Field()
+    document_source: DataSource = Field()
     verbose: bool = Field(default=False)
 
     @property
@@ -80,18 +86,23 @@ class LLM(BaseModel):
     @property
     def document_agent(self):
         provider = self.provider
-        system_prompt = """
-        Your job is to Retrieve the correct financial documents (e.g. annual reports) based on the provided company name and year.
-        Use tools to search, retrieve, and return the file URLs of the documents.
+        system_prompt = """ 
+        Your job is to:
+        1. Extract the company name and year from the input.
+        2. Use the company name and year to search the provided document sources for download URLs.
+        3. Use tools to retrieve the documents and return their local file URLs.
+        4. Once the documents are retrieved, only hand-off:
+           - file paths
+           - question
         """
         description = (
-            "Locate and retrieve financial documents based on company and year"
+            "Search for document source urls, retrieve documents as file-urls"
         )
         return FunctionAgent(
             name=Agents.DOCUMENT_AGENT.name,
             llm=provider.model(),
             description=description,
-            tools=[self.data_source.query_tool(provider), retrieve_pdfs],
+            tools=[self.document_source.query_tool(provider), retrieve_pdfs],
             system_prompt=system_prompt,
             can_handoff_to=[Agents.ANALYST_AGENT.name],
             verbose=self.verbose,
@@ -140,10 +151,45 @@ class LLM(BaseModel):
             verbose=self.verbose,
         )
 
+    @property
+    def concierge_agent(self):
+        provider = self.provider
+        system_prompt = """
+        Your job is to:
+        1. Understand the user's question, ensure it only relates to analyzing, summarizing, or comparing companies financial reports.
+        2. Identify key information:
+           - Company name: Must be either Safaricom or Equity Bank.
+           - Fiscal year: Must be one of the following years: 2021, 2022, 2023, or 2024.
+        3. If the question lacks clarity or key information(Company name and Fiscal year), ask concise follow-up questions to gather the missing information.
+        4. If the question is outside the system’s scope (e.g. market forecasts), politely inform the user that it's not supported.
+        5. Rephrase the question asked for clarity and precision.
+        6. If the question is valid and answerable, only output:
+           - Each Company name and year in separate line
+           - question.
+        When ready hand-off 
+        """
+        description = (
+            "Interpret user questions, extract key details, and hand-off valid requests."
+        )
+        return FunctionAgent(
+            name=Agents.CONCIERGE_AGENT.name,
+            llm=provider.model(),
+            description=description,
+            tools=[],
+            system_prompt=system_prompt,
+            can_handoff_to=[Agents.DOCUMENT_AGENT.name],
+            verbose=self.verbose,
+        )
+
     def model_post_init(self, context: Any, /) -> None:
         self._workflow = AgentWorkflow(
-            agents=[self.document_agent, self.analyst_agent],
-            root_agent=Agents.DOCUMENT_AGENT.name,
+            agents=[
+                self.concierge_agent,
+                self.document_agent,
+                self.analyst_agent,
+            ],
+            root_agent=Agents.CONCIERGE_AGENT.name,
+            initial_state={},
         )
 
     def query(self, query: str):
