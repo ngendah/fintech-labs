@@ -9,6 +9,7 @@ from urllib.parse import unquote, urlparse
 
 import requests
 from aiohttp import ClientSession
+from llama_index.core.workflow import Context
 
 logger = logging.getLogger(__name__)
 
@@ -34,16 +35,12 @@ def _extract_filename(url: str) -> str:
     return filename if filename else f"{uuid.uuid4().hex}.pdf"
 
 
-async def _download_pdf(session: ClientSession, url: str) -> str:
+async def _download_pdf(
+    session: ClientSession, url: str, file_path: Path
+) -> str:
     """Download a pdf file from the web and returns the file path"""
     try:
         # await _validate_url(session, url)
-        filename = _extract_filename(url)
-        temp_dir = Path(tempfile.gettempdir())
-        file_path = temp_dir / filename
-        logger.info(f"Downloading file {url} to {file_path}")
-        if os.path.isfile(file_path):
-            return file_path.as_posix()
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -64,13 +61,23 @@ async def _download_pdf(session: ClientSession, url: str) -> str:
         return f"File could not be download from the url {url}"
 
 
-async def download_pdfs(urls: List[str]) -> List[str]:
-    """Download a list of pdf files from the web and returns the file paths"""
+async def _retrieve_or_download_pdf(session: ClientSession, url: str) -> str:
+    """Retrieve or Download a pdf file from the web and returns the file path"""
+    filename = _extract_filename(url)
+    temp_dir = Path(tempfile.gettempdir())
+    file_path = temp_dir / filename
+    if os.path.isfile(file_path):
+        return file_path.as_posix()
+    return await _download_pdf(session, url, file_path)
 
-    async def download_files(s: ClientSession):
-        tasks = [_download_pdf(s, url) for url in urls]
+
+async def retrieve_pdfs(context: Context, urls: List[str]) -> List[str]:
+    """Retrieve a list of pdf files from the web and returns the file paths. Your input should be the document urls to retrieve"""
+
+    async def retrieve_or_download_files(s: ClientSession):
+        tasks = [_retrieve_or_download_pdf(s, url) for url in urls]
         return await asyncio.gather(*tasks)
 
     async with ClientSession() as session:
-        file_paths = await download_files(session)
+        file_paths = await retrieve_or_download_files(session)
     return file_paths
