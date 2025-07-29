@@ -29,8 +29,11 @@ docker-compose up --build
 
 The web UI will be available at `http://localhost:3000`.
 
-> The assistant may need to download documents from the internet,
-> which can introduce delays depending on connection speed.
+> Notes:
+> 
+> 1. The assistant needs to download the financial documents from the internet, which introduce delays depending on connection speed.
+> 2. Various factors affects an LLM's capabilities and the choice of model impacts both cost and the quality of results.
+>
 -----
 
 

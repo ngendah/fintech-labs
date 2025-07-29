@@ -1,4 +1,4 @@
-# 🌐 Infrastructure as Code (IaC) for Fintech App
+# 🌐 Infrastructure as Code (IaC)
 
 This Terraform project provisions a secure and scalable AWS infrastructure for a fintech application.
 

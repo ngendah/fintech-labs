@@ -53,9 +53,3 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 
 ---
 
-## 🤝 Let’s Connect
-
-📫 [ngendah@pm.me]  
-
----
-
