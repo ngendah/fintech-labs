@@ -47,7 +47,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
                         '⚠️ WebSocket closed:',
                         e.reason || 'no reason'
                     )
-                    setSocket(null) // Remove it from context when disconnected
+                    setSocket(null)
                 }
             } catch (err) {
                 console.error('Failed to initialize WebSocket:', err)
