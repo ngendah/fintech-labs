@@ -89,7 +89,7 @@ class LLM(BaseModel):
         system_prompt = """ 
         Your job is to:
         1. Extract the company name and year from the input.
-        2. Use the company name and year to search the provided document sources for download URLs.
+        2. Use the company name and year to search for download URLs.
         3. Use tools to retrieve the documents and return their local file URLs.
         4. Once the documents are retrieved, only hand-off:
            - file paths
