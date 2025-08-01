@@ -45,9 +45,6 @@ async def llm_chat(
     try:
         await websocket.accept()
         data_source = DataSource(
-            name="financial_reports_2023_to_2024_for_safaricom_and_equity_bank",
-            description="Provides download urls for annual financial performance reports "
-            "for the years 2023 to 2024, for Safaricom PLC and Equity Bank",
             sources=[
                 FileUrl(
                     (
@@ -57,7 +54,7 @@ async def llm_chat(
             ],
         )
         config = LLMConfig()
-        llm = LLM(config=config, document_source=data_source, verbose=True)
+        llm = LLM(config=config, document_source=data_source)
         while True:
             query_obj = await websocket.receive_json()
             query = Query.model_validate(query_obj)

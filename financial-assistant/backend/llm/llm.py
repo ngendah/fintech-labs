@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Any, List, Optional, Union
 
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
-from llama_index.core.agent.workflow import AgentWorkflow, FunctionAgent, ReActAgent
+from llama_index.core.agent.workflow import AgentWorkflow, FunctionAgent
 from llama_index.core.tools import FunctionTool, QueryEngineTool
 from llama_index.readers.web import SimpleWebPageReader
 from pydantic import BaseModel, Field, FileUrl, HttpUrl
@@ -22,8 +22,6 @@ class DownloadUrls(BaseModel):
 
 
 class DataSource(BaseModel):
-    name: str = Field()
-    description: str = Field()
     sources: List[Union[FileUrl, HttpUrl]] = Field()
 
     @property
@@ -48,7 +46,7 @@ class DataSource(BaseModel):
             output_cls=DownloadUrls,
             response_mode="compact",
             system_prompt=(
-                "Only resolve each company name and year to a download URL. "
+                "Only resolve company name and year to a download URL. "
                 "Do not rely on prior knowledge. "
                 "Do not invent. "
                 "Do not guess. "
@@ -56,19 +54,20 @@ class DataSource(BaseModel):
         )
         return query_engine
 
-    def query_tool(self, provider: Provider):
+    def query_tool(self, name: str, description: str, provider: Provider):
         query_engine = self.query_engine(provider)
         return QueryEngineTool.from_defaults(
             query_engine=query_engine,
-            name=self.name,
-            description=self.description,
+            name=name,
+            description=description,
         )
 
 
 class Agents(Enum):
     CONCIERGE_AGENT = 1
-    DOCUMENT_AGENT = 2
-    ANALYST_AGENT = 3
+    DOCUMENT_URL_SEARCH_AGENT = 2
+    DOCUMENT_DOWNLOAD_AGENT = 3
+    ANALYST_AGENT = 4
 
 
 class LLM(BaseModel):
@@ -84,25 +83,71 @@ class LLM(BaseModel):
         return provider.value(self.config)
 
     @property
-    def document_agent(self):
+    def document_url_search_agent(self):
         provider = self.provider
-        system_prompt = """ 
-        Your job is to:
-        1. Extract the company name and year from the input.
-        2. Use the company name and year to search for download URLs.
-        3. Use tools to retrieve the documents and return their local file URLs.
-        4. Once the documents are retrieved, only hand-off:
-           - file paths
-           - question
+        system_prompt = f"""
+        Your are the {Agents.DOCUMENT_URL_SEARCH_AGENT.name}.
+        Your job is to search for financial reports download urls given company names and financial years.
+
+        Follow these steps EXACTLY:
+
+        1. Extract company names and years from the input. Only use those explicitly mentioned.
+
+        2. For EACH company and year, use the tool, search_tool, to get its report download URL. Then OUTPUT:
+            URLs: <comma-separated list of urls>
+            QUESTION: <question>
+            
+        4. AFTER OUTPUT is COMPLETE, hand-off to {Agents.DOCUMENT_DOWNLOAD_AGENT.name}.
         """
         description = (
-            "Search for document source urls, retrieve documents as file-urls"
+            "Search for documents download urls and hand-off"
         )
         return FunctionAgent(
-            name=Agents.DOCUMENT_AGENT.name,
+            name=Agents.DOCUMENT_URL_SEARCH_AGENT.name,
             llm=provider.model(),
             description=description,
-            tools=[self.document_source.query_tool(provider), retrieve_pdfs],
+            tools=[
+                self.document_source.query_tool(
+                    name="search_tool",
+                    description="Search for download url, given a company name and year",
+                    provider=provider,
+                ),
+            ],
+            system_prompt=system_prompt,
+            can_handoff_to=[Agents.DOCUMENT_DOWNLOAD_AGENT.name],
+            verbose=self.verbose,
+        )
+
+    @property
+    def document_download_agent(self):
+        provider = self.provider
+        system_prompt = f"""
+        You are the {Agents.DOCUMENT_DOWNLOAD_AGENT.name}.
+        Your job is to download documents given download urls.
+
+        Follow these steps EXACTLY:
+
+        1. Extract download urls from the input.
+
+        2. Use the tool, retrieve_pdfs, to download documents on those URLs.
+           The tool will return local files-paths of the downloaded documents.
+
+        3. AFTER download is complete, OUTPUT:
+            FILE_PATHS: <comma-separated list of local file paths>
+            QUESTION: <question>
+           
+        4. AFTER OUTPUT is COMPLETE, hand-off to {Agents.ANALYST_AGENT.name}.
+        """
+        description = (
+            "Download documents, return file-urls and hand-off"
+        )
+        return FunctionAgent(
+            name=Agents.DOCUMENT_DOWNLOAD_AGENT.name,
+            llm=provider.model(),
+            description=description,
+            tools=[
+                retrieve_pdfs,
+            ],
             system_prompt=system_prompt,
             can_handoff_to=[Agents.ANALYST_AGENT.name],
             verbose=self.verbose,
@@ -154,30 +199,35 @@ class LLM(BaseModel):
     @property
     def concierge_agent(self):
         provider = self.provider
-        system_prompt = """
-        Your job is to:
-        1. Understand the user's question, ensure it only relates to analyzing, summarizing, or comparing companies financial reports.
-        2. Identify key information:
-           - Company name: Must be either Safaricom or Equity Bank.
-           - Fiscal year: Must be one of the following years: 2021, 2022, 2023, or 2024.
-        3. If the question lacks clarity or key information(Company name and Fiscal year), ask concise follow-up questions to gather the missing information.
-        4. If the question is outside the system’s scope (e.g. market forecasts), politely inform the user that it's not supported.
-        5. Rephrase the question asked for clarity and precision.
-        6. If the question is valid and answerable, only output:
-           - Each Company name and year in separate line
-           - question.
-        When ready hand-off 
+        system_prompt = f"""
+        You are the {Agents.CONCIERGE_AGENT.name}.
+        You review users questions on financial reports for Safaricom and Equity Bank (2021–2024 only).
+
+        Follow these steps EXACTLY:
+
+        1. If the question is about forecasts, stocks, investments, or non-financial topics, respond to the user:
+           "I can only analyze financial reports for Safaricom and Equity Bank for 2021–2024."
+
+        2. Extract company and year from the question:
+           - Companies: Safaricom, Equity Bank
+           - Years: 2021, 2022, 2023, 2024
+           Accept synonyms like "both", "each", "compare".
+
+        3. If BOTH company and year are clearly mentioned. Rephrase the question for clarity AND OUTPUT:
+            COMPANIES: <comma-separated>
+            YEARS: <comma-separated>
+            QUESTION: <rephrased question>
+            
+        4. AFTER OUTPUT is COMPLETE, hand-off to {Agents.DOCUMENT_URL_SEARCH_AGENT.name}.
         """
-        description = (
-            "Interpret user questions, extract key details, and hand-off valid requests."
-        )
+        description = "Interpret user questions, extract key details, and hand-off valid requests."
         return FunctionAgent(
             name=Agents.CONCIERGE_AGENT.name,
             llm=provider.model(),
             description=description,
             tools=[],
             system_prompt=system_prompt,
-            can_handoff_to=[Agents.DOCUMENT_AGENT.name],
+            can_handoff_to=[Agents.DOCUMENT_URL_SEARCH_AGENT.name],
             verbose=self.verbose,
         )
 
@@ -185,7 +235,8 @@ class LLM(BaseModel):
         self._workflow = AgentWorkflow(
             agents=[
                 self.concierge_agent,
-                self.document_agent,
+                self.document_url_search_agent,
+                self.document_download_agent,
                 self.analyst_agent,
             ],
             root_agent=Agents.CONCIERGE_AGENT.name,
