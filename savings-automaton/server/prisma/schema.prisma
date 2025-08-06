@@ -12,3 +12,47 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// 2025-08-06 11:58
+
+model User {
+  id          Int         @default(autoincrement()) @id
+  email       String      @unique
+  name        String?
+  created_at  DateTime    @default(now())
+  savingSchedules SavingSchedule[]
+}
+
+enum Frequency {
+  Daily
+  Weekly
+  Monthly
+}
+
+model SavingSchedule {
+  id          Int       @default(autoincrement()) @id
+  amount      Decimal   @default(0)
+  frequency   Frequency @default(Monthly)
+  startDate   DateTime
+  nextRunAt   DateTime
+  isActive    Boolean   @default(true)
+  created_at  DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int       @unique
+  savingLogs  SavingLog[]   
+}
+
+enum Status{
+  SUCCESS
+  FAILED
+}
+
+model SavingLog {
+  id          Int       @default(autoincrement()) @id
+  executedAt  DateTime
+  status      Status
+  message     String?
+  schedule    SavingSchedule  @relation(fields: [scheduleId], references: [id])
+  scheduleId  Int       @unique
+}
+
