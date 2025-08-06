@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -19,7 +19,7 @@ model User {
   id          Int         @default(autoincrement()) @id
   email       String      @unique
   name        String?
-  created_at  DateTime    @default(now())
+  createdAt  DateTime    @default(now())
   savingSchedules SavingSchedule[]
 }
 
@@ -36,7 +36,7 @@ model SavingSchedule {
   startDate   DateTime
   nextRunAt   DateTime
   isActive    Boolean   @default(true)
-  created_at  DateTime  @default(now())
+  createdAt  DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id])
   userId      Int       @unique
   savingLogs  SavingLog[]   
