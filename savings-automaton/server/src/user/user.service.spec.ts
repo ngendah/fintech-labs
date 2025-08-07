@@ -4,6 +4,7 @@ import { UserModule } from 'src/user/user.module';
 import { PrismaClient } from '@prisma/client';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 describe('UserService', () => {
   let service: UserService;
@@ -30,15 +31,33 @@ describe('UserService', () => {
       id: 1,
       name: 'test',
       email: 'test@email.com',
+      password: 'testpass',
       createdAt: Date.now(),
     });
     const user = await service.create({
       name: 'test',
       email: 'test@email.com',
+      password: 'testpass',
     });
     expect(user).toBeDefined();
     expect(user?.id).toBeDefined();
     expect(user?.name).toBe('test');
     expect(user?.email).toBe('test@email.com');
+  });
+
+  it('should signin user', async () => {
+    const passwd = await bcrypt.hash('testpass', 10);
+    prisma.user.findFirst.mockResolvedValue({
+      id: 1,
+      name: 'test',
+      email: 'test@email.com',
+      password: passwd,
+      createdAt: Date.now(),
+    });
+    const user = await service.signIn({
+      email: 'test@email.com',
+      password: 'testpass',
+    });
+    expect(user).toBeDefined();
   });
 });

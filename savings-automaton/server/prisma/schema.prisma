@@ -19,6 +19,7 @@ model User {
   id          Int         @default(autoincrement()) @id
   email       String      @unique
   name        String?
+  password    String
   createdAt  DateTime    @default(now())
   savingSchedules SavingSchedule[]
 }
