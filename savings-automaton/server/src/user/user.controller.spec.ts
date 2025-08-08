@@ -24,12 +24,17 @@ describe('UserController', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('/POST user', () => {
     prisma.user.create.mockResolvedValue({
       id: 1,
       name: 'test',
       email: 'test@email.com',
-      createdAt: Date.now(),
+      password: '',
+      createdAt: new Date(),
     });
 
     request
