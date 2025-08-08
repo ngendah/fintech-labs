@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 // 2025-08-06 11:58
@@ -22,6 +22,7 @@ model User {
   password    String
   createdAt  DateTime    @default(now())
   savingSchedules SavingSchedule[]
+  savings Saving[]
 }
 
 enum Frequency {
@@ -30,17 +31,26 @@ enum Frequency {
   Monthly
 }
 
+enum Telco {
+  Safaricom
+  Airtel
+  Equitel
+}
+
 model SavingSchedule {
   id          Int       @default(autoincrement()) @id
+  mobileNumber String
+  telco       Telco
+  reference   String    @default(uuid())
   amount      Decimal   @default(0)
   frequency   Frequency @default(Monthly)
   startDate   DateTime
   nextRunAt   DateTime
   isActive    Boolean   @default(true)
-  createdAt  DateTime  @default(now())
+  createdAt   DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id])
   userId      Int       @unique
-  savingLogs  SavingLog[]   
+  savingLogs  SavingLog[]
 }
 
 enum Status{
@@ -57,3 +67,20 @@ model SavingLog {
   scheduleId  Int       @unique
 }
 
+// 2025-08-08 19:54
+
+model Saving {
+  id          Int       @default(autoincrement()) @id
+  amount      Decimal   @default(0)
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int       @unique
+  reference   String
+}
+
+model ServiceCharge {
+  id          Int       @default(autoincrement()) @id
+  amount      Decimal   @default(0)
+  createdAt   DateTime  @default(now())
+  reference   String
+}
