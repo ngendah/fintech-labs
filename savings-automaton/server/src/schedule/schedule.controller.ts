@@ -1,16 +1,23 @@
-import { Body, Delete, Post, Put, Controller, UseGuards, Param } from '@nestjs/common';
+import {
+  Body,
+  Delete,
+  Post,
+  Put,
+  Controller,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { CreateScheduleDto } from './dto/createSchedule.dto';
+import { CreateScheduleDto } from 'src/schedule/dto/createSchedule.dto';
 import { CurrentUser } from 'src/auth/currentUser';
 import { User } from 'src/user/dto/user.dto';
-import { UpdateScheduleDto } from './dto/updateSchedule.dto';
-import { DeleteScheduleDto } from './dto/deleteSchedule.dto';
+import { UpdateScheduleDto } from 'src/schedule/dto/updateSchedule.dto';
 
 @UseGuards(AuthGuard)
 @Controller('schedule')
 export class ScheduleController {
-  constructor(private scheduleService: ScheduleService) { }
+  constructor(private scheduleService: ScheduleService) {}
 
   @Post()
   async create(@Body() schedule: CreateScheduleDto, @CurrentUser() user: User) {
@@ -38,8 +45,12 @@ export class ScheduleController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() schedule: UpdateScheduleDto, @CurrentUser() user: User) { }
+  async update(
+    @Param('id') id: number,
+    @Body() schedule: UpdateScheduleDto,
+    @CurrentUser() user: User,
+  ) {}
 
   @Delete(':id')
-  async delete(@Param('id') id: number, @CurrentUser() user: User) { }
+  async delete(@Param('id') id: number, @CurrentUser() user: User) {}
 }
