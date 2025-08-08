@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SavingSchedule, Prisma } from '@prisma/client';
-import { DeleteScheduleDto } from './dto/deleteSchedule.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -23,7 +22,7 @@ export class ScheduleService {
 
   async delete(
     where: Prisma.SavingScheduleWhereUniqueInput,
-  ): Promise<DeleteScheduleDto | undefined> {
+  ): Promise<SavingSchedule | undefined> {
     return this.prisma.savingSchedule.delete({ where });
   }
 }
