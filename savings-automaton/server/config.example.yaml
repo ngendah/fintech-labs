@@ -1,0 +1,6 @@
+jenga: # https://developer.jengahq.io/
+  api_base: "https://uat.finserve.africa"
+  merchant_code: '123456'
+  api_key: ""
+  consumer_secret: ""
+
