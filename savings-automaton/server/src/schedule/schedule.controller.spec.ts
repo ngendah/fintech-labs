@@ -57,13 +57,18 @@ describe('ScheduleController', () => {
   it('/POST schedule', async () => {
     const now = new Date();
     const nextRunAt = new Date(now.setMonth(now.getMonth() + 1));
+    const mobileNumber = '+254008900700';
+    const telco = 'Equitel';
     prisma.savingSchedule.create.mockResolvedValue({
       id: 1,
       userId: 1,
+      reference: 'e8bf27bb-da02-4165-8f6f-d8801494a7df',
       amount: 100,
       frequency: Frequency.Daily,
       startDate: new Date(),
       nextRunAt,
+      mobileNumber,
+      telco,
     });
     return request
       .agent(app.getHttpServer())
@@ -72,6 +77,8 @@ describe('ScheduleController', () => {
         amount: 100,
         frequency: Frequency.Daily,
         startDate: new Date(),
+        mobileNumber,
+        telco,
       } as CreateScheduleDto)
       .expect(201);
   });
