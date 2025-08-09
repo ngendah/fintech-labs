@@ -41,7 +41,6 @@ model SavingSchedule {
   id          Int       @default(autoincrement()) @id
   mobileNumber String
   telco       Telco
-  reference   String    @default(uuid())
   amount      Decimal   @default(0)
   frequency   Frequency @default(Monthly)
   startDate   DateTime
@@ -53,15 +52,18 @@ model SavingSchedule {
   savingLogs  SavingLog[]
 }
 
-enum Status{
+enum Status {
+  INITIATED
+  RETRY
   SUCCESS
   FAILED
 }
 
 model SavingLog {
   id          Int       @default(autoincrement()) @id
+  reference   String
   executedAt  DateTime
-  status      Status
+  status      Status?
   message     String?
   schedule    SavingSchedule  @relation(fields: [scheduleId], references: [id])
   scheduleId  Int       @unique
