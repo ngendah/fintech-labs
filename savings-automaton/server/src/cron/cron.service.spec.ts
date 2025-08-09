@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CronService } from './cron.service';
+import { CronModule } from 'src/cron/cron.module';
+import { CronService } from 'src/cron/cron.service';
 
 describe('CronService', () => {
   let service: CronService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CronService],
+      imports: [CronModule],
     }).compile();
 
     service = module.get<CronService>(CronService);
