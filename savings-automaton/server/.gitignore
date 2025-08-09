@@ -59,4 +59,5 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 /generated/prisma
 
 # configuration files
-*config.ya?ml
+config.yml
+config.yaml
