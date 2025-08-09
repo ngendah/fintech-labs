@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { SavingSchedule } from '@prisma/client';
+import { Status } from '@prisma/client';
 import { JengaApi } from 'src/partners/jenga/jenga.api';
 import {
   DepositConfirmationDto,
@@ -14,11 +14,11 @@ export class JengaService {
   constructor(
     private prisma: PrismaService,
     private jengaApi: JengaApi,
-  ) {}
+  ) { }
 
   async requestDeposit(
     deposit: DepositDto,
-  ): Promise<{ transactionId: string } | undefined> {
+  ): Promise<{ status: Status; message?: string }> {
     try {
       // TODO refactor bearerToken call to instead get it from cache
       const bearer = await this.jengaApi.bearerToken();
@@ -26,25 +26,36 @@ export class JengaService {
         bearer.token,
         deposit,
       );
-      return { transactionId: result.transactionId };
+      return { status: Status.INITIATED };
     } catch (err) {
       this.logger.error(err);
+      return { status: Status.FAILED, message: err };
     }
   }
 
   async confirmDeposit(deposit: DepositConfirmationDto) {
-    const schedule = await this.prisma.savingSchedule.findFirst({
+    const log = await this.prisma.savingLog.findFirst({
       where: {
         reference: deposit.transactionReference,
       },
     });
-    if (!schedule) {
-      return this.logger.error(`Unable to confirm deposit: ${deposit}`);
+    if (!log) {
+      return this.logger.error(
+        `Unable to confirm deposit: ${deposit}, missing saving-log`,
+      );
     }
-    const userId = (schedule as SavingSchedule).userId;
+    const schedule = await this.prisma.savingSchedule.findUnique({
+      where: { id: log.scheduleId },
+    });
+    if (!schedule) {
+      return this.logger.error(
+        `Unable to confirm deposit: ${deposit}, missing saving-schedule ${log.scheduleId}`,
+      );
+    }
+    const userId = schedule.userId;
     {
       const data = {
-        userId: userId,
+        userId,
         amount: deposit.debitedAmount,
         reference: deposit.transactionReference,
       };
@@ -57,6 +68,10 @@ export class JengaService {
       };
       await this.prisma.serviceCharge.create({ data });
     }
+    await this.prisma.savingLog.update({
+      where: { id: log.id },
+      data: { status: Status.SUCCESS },
+    });
     // TODO notify user that the deposit is successful
   }
 }

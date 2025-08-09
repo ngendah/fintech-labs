@@ -10,5 +10,6 @@ import { HttpModule } from '@nestjs/axios';
   imports: [PrismaModule, SettingsModule, HttpModule],
   controllers: [JengaController],
   providers: [JengaService, JengaApi],
+  exports: [JengaService],
 })
 export class JengaModule {}
