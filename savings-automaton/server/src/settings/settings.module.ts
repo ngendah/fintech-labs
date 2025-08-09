@@ -3,10 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
+import { JengaSettings, ApiSettings } from './settings';
 
 const loadConfiguration = (): Record<string, any> => {
   const YAML_CONFIG_FILENAME = 'config.yaml';
-  const file = readFileSync(join(__dirname, YAML_CONFIG_FILENAME), 'utf8');
+  const file = readFileSync(
+    join(__dirname, '../../', YAML_CONFIG_FILENAME),
+    'utf8',
+  );
   return yaml.load(file) as Record<string, any>;
 };
 
@@ -16,5 +20,7 @@ const loadConfiguration = (): Record<string, any> => {
       load: [loadConfiguration],
     }),
   ],
+  providers: [JengaSettings, ApiSettings],
+  exports: [JengaSettings, ApiSettings],
 })
 export class SettingsModule {}
