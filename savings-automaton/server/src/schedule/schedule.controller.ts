@@ -13,6 +13,7 @@ import { CreateScheduleDto } from 'src/schedule/dto/createSchedule.dto';
 import { CurrentUser } from 'src/auth/currentUser';
 import { User } from 'src/user/dto/user.dto';
 import { UpdateScheduleDto } from 'src/schedule/dto/updateSchedule.dto';
+import { nextRunDate } from 'src/utils/dateUtils';
 
 @UseGuards(AuthGuard)
 @Controller('schedule')
@@ -22,21 +23,7 @@ export class ScheduleController {
   @Post()
   async create(@Body() schedule: CreateScheduleDto, @CurrentUser() user: User) {
     const at = new Date(schedule.startDate);
-    let nextRunAt: Date;
-    switch (schedule.frequency) {
-      case 'Daily':
-        nextRunAt = new Date(new Date(at).setDate(at.getDate() + 1));
-        break;
-      case 'Weekly':
-        nextRunAt = new Date(new Date(at).setDate(at.getDate() + 7));
-        break;
-      case 'Monthly':
-        nextRunAt = new Date(new Date(at).setMonth(at.getMonth() + 1));
-        break;
-      default:
-        nextRunAt = new Date(new Date(at).setMonth(at.getMonth() + 1));
-        break;
-    }
+    let nextRunAt = nextRunDate(at, schedule.frequency);
     this.scheduleService.create({
       user: { connect: { id: user.id } },
       nextRunAt,
