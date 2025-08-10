@@ -1,8 +1,0 @@
-.dockerignore
-.env*
-.git*
-**/*/node_modules/
-**/*/coverage/
-**/*/.prettierignore
-**/*/.prettierrc
-**/*/__tests__/
