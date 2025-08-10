@@ -1,0 +1,17 @@
+api:
+  domain: 'http://localhost:8000'
+
+# API to work with Equity Bank Accounts
+jenga: # https://developer.jengahq.io/
+  api_base: "https://uat.finserve.africa"
+  merchant_code: '123456'
+  api_key: "sk_api_key"
+  consumer_secret: "sk_consumer_secret"
+  stk:
+    push_type: "USSD"
+  callback_path: '/daraja'
+  bank_account: # Bank Details
+    name: 'testing-account'
+    number: '0987654321'
+    country_code: 'KEN'
+
