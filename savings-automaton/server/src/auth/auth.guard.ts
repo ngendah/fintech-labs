@@ -12,14 +12,14 @@ export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request: Request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(token);
-      request['user'] = payload;
+      const payload = await this.jwtService.verifyAsync(token); // eslint-disable-line
+      request['user'] = payload; // eslint-disable-line
     } catch {
       throw new UnauthorizedException();
     }

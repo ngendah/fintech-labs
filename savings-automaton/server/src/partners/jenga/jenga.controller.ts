@@ -9,10 +9,12 @@ export class JengaController {
   constructor(private jengaService: JengaService) {}
 
   @Post()
-  async callback(@Body() deposit: DepositConfirmationDto) {
+  callback(@Body() deposit: DepositConfirmationDto) {
     if (!deposit.status || deposit.code != 3) {
-      return this.logger.error(`Saving Deposit failure ${deposit}`);
+      return this.logger.error(
+        `Saving Deposit failure ${deposit.transactionReference}`,
+      );
     }
-    this.jengaService.confirm_deposit(deposit);
+    this.jengaService.confirmDeposit(deposit);
   }
 }

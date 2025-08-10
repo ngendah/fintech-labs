@@ -40,7 +40,7 @@ export class CronService {
         frequency,
       },
     });
-    await Promise.all(schedules.map(this.requestDeposit));
+    await Promise.all(schedules.map((s) => this.requestDeposit(s)));
   }
 
   private async requestDeposit(schedule: SavingSchedule) {

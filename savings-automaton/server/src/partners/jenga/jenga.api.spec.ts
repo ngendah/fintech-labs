@@ -67,7 +67,7 @@ describe('JengaApi', () => {
       status: 200,
       statusText: 'OK',
       headers: {},
-      config: { url } as any,
+      config: { url },
       request: {},
     };
     mockAxiosPost.mockResolvedValueOnce(mockTokenResponse);
@@ -83,7 +83,7 @@ describe('JengaApi', () => {
       status: 200,
       statusText: 'OK',
       headers: {},
-      config: {} as any,
+      config: {},
       request: {},
     });
     const now = new Date();

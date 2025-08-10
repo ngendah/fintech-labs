@@ -22,14 +22,12 @@ export class JengaService {
     try {
       // TODO refactor bearerToken call to instead get it from cache
       const bearer = await this.jengaApi.bearerToken();
-      const result = await this.jengaApi.pushDepositRequest(
-        bearer.token,
-        deposit,
-      );
+      await this.jengaApi.pushDepositRequest(bearer.token, deposit);
       return { status: Status.INITIATED };
-    } catch (err) {
+    } catch (err: unknown) {
       this.logger.error(err);
-      return { status: Status.FAILED, message: err };
+      const message = err instanceof Error ? err.message : undefined;
+      return { status: Status.FAILED, message };
     }
   }
 
@@ -41,7 +39,7 @@ export class JengaService {
     });
     if (!log) {
       return this.logger.error(
-        `Unable to confirm deposit: ${deposit}, missing saving-log`,
+        `Unable to confirm deposit: ${deposit.transactionReference}, missing saving-log`,
       );
     }
     const schedule = await this.prisma.savingSchedule.findUnique({
@@ -49,7 +47,7 @@ export class JengaService {
     });
     if (!schedule) {
       return this.logger.error(
-        `Unable to confirm deposit: ${deposit}, missing saving-schedule ${log.scheduleId}`,
+        `Unable to confirm deposit: ${deposit.transactionReference}, missing saving-schedule ${log.scheduleId}`,
       );
     }
     const userId = schedule.userId;

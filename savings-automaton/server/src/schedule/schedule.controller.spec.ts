@@ -7,16 +7,17 @@ import {
   ExecutionContext,
   INestApplication,
 } from '@nestjs/common';
-import { User } from 'src/user/dto/user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { PrismaClient, Frequency } from '@prisma/client';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateScheduleDto } from './dto/createSchedule.dto';
+import { User } from 'src/user/dto/user.dto';
 
 class MockAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
+    let req = context.switchToHttp().getRequest(); // eslint-disable-line
+    // eslint-disable-next-line
     req.user = {
       id: 1,
       name: 'test',

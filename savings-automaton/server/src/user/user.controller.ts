@@ -19,14 +19,14 @@ export class UserController {
   ) {}
 
   @Post()
-  async signUp(@Body() data: CreateUserDto) {
+  signUp(@Body() data: CreateUserDto) {
     this.userService.create(data);
   }
 
   @Post('sign-in')
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() data: LogInUserDto) {
-    const user = await this.signIn(data);
+    const user = await this.userService.signIn(data);
     if (!user) {
       throw new UnauthorizedException();
     }

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   StkPushRequestDto,
   StkPushResponseDto,
@@ -35,7 +35,7 @@ export class JengaApi {
         },
       },
     );
-    if (response.status != HttpStatus.OK) {
+    if (response.status != 200) {
       throw new Error(response.statusText);
     }
     const json = (await response.data) as Record<string, any>;
@@ -72,7 +72,7 @@ export class JengaApi {
         headers,
       },
     );
-    if (response.status != HttpStatus.OK) {
+    if (response.status != 200) {
       throw new Error(response.statusText);
     }
     const json = (await response.data) as StkPushResponseDto;
