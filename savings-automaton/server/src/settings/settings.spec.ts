@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { JengaSettings, AUTHENTICATION, STK_PUSH } from './settings';
-import { SettingsModule } from './settings.module';
+import { Test, TestingModule } from '@nestjs/testing';
 import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
+import { AUTHENTICATION, JengaSettings, STK_PUSH } from './settings';
+import { SettingsModule } from './settings.module';
 
 const loadConfiguration = (): Record<string, any> => {
   const YAML_CONFIG_FILENAME = 'config.example.yaml';

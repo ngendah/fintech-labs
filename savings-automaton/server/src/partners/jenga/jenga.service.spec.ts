@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { JengaService } from 'src/partners/jenga/jenga.service';
 import { JengaModule } from 'src/partners/jenga/jenga.module';
+import { JengaService } from 'src/partners/jenga/jenga.service';
 
 describe('JengaService', () => {
   let service: JengaService;

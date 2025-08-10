@@ -1,11 +1,11 @@
-import * as request from 'supertest';
-import * as bcrypt from 'bcrypt';
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { UserModule } from './user.module';
+import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
-import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
+import * as bcrypt from 'bcrypt';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as request from 'supertest';
+import { UserModule } from './user.module';
 
 describe('UserController', () => {
   let app: INestApplication;

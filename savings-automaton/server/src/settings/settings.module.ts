@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
-import { JengaSettings, ApiSettings } from './settings';
+import { ApiSettings, JengaSettings } from './settings';
 
 const loadConfiguration = (): Record<string, any> => {
   const YAML_CONFIG_FILENAME = 'config.yaml';

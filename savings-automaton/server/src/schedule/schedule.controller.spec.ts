@@ -1,18 +1,18 @@
-import * as request from 'supertest';
-import { Test, TestingModule } from '@nestjs/testing';
-import { ScheduleController } from './schedule.controller';
-import { ScheduleModule } from './schedule.module';
 import {
   CanActivate,
   ExecutionContext,
   INestApplication,
 } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Frequency, PrismaClient } from '@prisma/client';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { PrismaClient, Frequency } from '@prisma/client';
-import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateScheduleDto } from './dto/createSchedule.dto';
 import { User } from 'src/user/dto/user.dto';
+import * as request from 'supertest';
+import { CreateScheduleDto } from './dto/createSchedule.dto';
+import { ScheduleController } from './schedule.controller';
+import { ScheduleModule } from './schedule.module';
 
 class MockAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {

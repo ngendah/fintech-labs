@@ -1,10 +1,10 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import {
+  DepositDto,
   StkPushRequestDto,
   StkPushResponseDto,
-  DepositDto,
 } from 'src/partners/jenga/dto/jenga.dto';
-import { HttpService } from '@nestjs/axios';
 import { JengaSettings } from 'src/settings/settings';
 
 export const PUSH_CALL_SIGNATURE =

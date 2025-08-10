@@ -1,10 +1,10 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { JengaController } from 'src/partners/jenga/jenga.controller';
-import { SettingsModule } from 'src/settings/settings.module';
 import { JengaApi } from 'src/partners/jenga/jenga.api';
+import { JengaController } from 'src/partners/jenga/jenga.controller';
 import { JengaService } from 'src/partners/jenga/jenga.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { HttpModule } from '@nestjs/axios';
+import { SettingsModule } from 'src/settings/settings.module';
 
 @Module({
   imports: [PrismaModule, SettingsModule, HttpModule],

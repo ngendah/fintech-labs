@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ScheduleService } from './schedule.service';
-import { ScheduleModule } from './schedule.module';
 import { PrismaClient } from '@prisma/client';
-import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ScheduleModule } from './schedule.module';
+import { ScheduleService } from './schedule.service';
 
 describe('ScheduleService', () => {
   let service: ScheduleService;

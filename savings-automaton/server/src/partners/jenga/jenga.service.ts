@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Status } from '@prisma/client';
-import { JengaApi } from 'src/partners/jenga/jenga.api';
 import {
   DepositConfirmationDto,
   DepositDto,
 } from 'src/partners/jenga/dto/jenga.dto';
+import { JengaApi } from 'src/partners/jenga/jenga.api';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()

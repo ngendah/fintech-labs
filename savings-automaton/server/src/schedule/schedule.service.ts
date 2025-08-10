@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma, SavingSchedule } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { SavingSchedule, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ScheduleService {

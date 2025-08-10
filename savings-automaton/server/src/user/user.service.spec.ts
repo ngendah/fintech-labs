@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from 'src/user/user.service';
-import { UserModule } from 'src/user/user.module';
 import { PrismaClient } from '@prisma/client';
-import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
-import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UserModule } from 'src/user/user.module';
+import { UserService } from 'src/user/user.service';
 
 describe('UserService', () => {
   let service: UserService;

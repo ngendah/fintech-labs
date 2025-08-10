@@ -6,10 +6,10 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
+import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/createUser.dto';
 import { LogInUserDto } from 'src/user/dto/logInUser.dto';
-import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 
 @Controller('user')
 export class UserController {

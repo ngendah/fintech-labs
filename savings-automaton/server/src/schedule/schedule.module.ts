@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from 'src/auth/auth.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
 import { ScheduleController } from 'src/schedule/schedule.controller';
 import { ScheduleService } from 'src/schedule/schedule.service';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [PrismaModule, AuthModule],

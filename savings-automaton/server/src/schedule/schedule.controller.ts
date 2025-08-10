@@ -1,10 +1,10 @@
-import { Body, Post, Controller, UseGuards } from '@nestjs/common';
-import { ScheduleService } from './schedule.service';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { CreateScheduleDto } from 'src/schedule/dto/createSchedule.dto';
 import { CurrentUser } from 'src/auth/currentUser';
+import { CreateScheduleDto } from 'src/schedule/dto/createSchedule.dto';
 import { User } from 'src/user/dto/user.dto';
 import { nextRunDate } from 'src/utils/dateUtils';
+import { ScheduleService } from './schedule.service';
 
 @UseGuards(AuthGuard)
 @Controller('schedule')

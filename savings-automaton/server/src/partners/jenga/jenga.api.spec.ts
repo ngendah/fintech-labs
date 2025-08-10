@@ -1,12 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigModule } from '@nestjs/config';
-import { JengaModule } from 'src/partners/jenga/jenga.module';
-import { JengaApi, PUSH_CALL_SIGNATURE } from './jenga.api';
-import { JengaSettings } from 'src/settings/settings';
 import { HttpService } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
 import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
+import { JengaModule } from 'src/partners/jenga/jenga.module';
+import { JengaSettings } from 'src/settings/settings';
+import { JengaApi, PUSH_CALL_SIGNATURE } from './jenga.api';
 
 const loadConfiguration = (): Record<string, any> => {
   const YAML_CONFIG_FILENAME = 'config.example.yaml';

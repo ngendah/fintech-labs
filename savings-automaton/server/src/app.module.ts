@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from 'src/app.service';
-import { UserModule } from 'src/user/user.module';
 import { ScheduleModule } from 'src/schedule/schedule.module';
+import { UserModule } from 'src/user/user.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [UserModule, ScheduleModule],
