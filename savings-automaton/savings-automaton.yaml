@@ -9,6 +9,23 @@ data:
   # Base64 encoded PostgreSQL connection string (e.g., echo -n 'postgres://user:pass@host:5432/dbname' | base64)
   DB_DATABASE_URL: cG9zdGdyZXM6Ly91c2VyOnBhc3NAbG9jYWxob3N0OjU0MzIvbXlkYg== # REPLACE THIS WITH YOUR ACTUAL BASE64 ENCODED DATABASE_URL
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: savings-automaton-configuration
+type: Opaque
+stringData:
+  # Base64 encoded config.yaml
+  config.yaml: |
+    YXBpOgogIGRvbWFpbjogJ2h0dHA6Ly9sb2NhbGhvc3Q6ODAwMCcKCiMgQVBJIHRvIHdvcmsgd2l0
+    aCBFcXVpdHkgQmFuayBBY2NvdW50cwpqZW5nYTogIyBodHRwczovL2RldmVsb3Blci5qZW5nYWhx
+    LmlvLwogIGFwaV9iYXNlOiAiaHR0cHM6Ly91YXQuZmluc2VydmUuYWZyaWNhIgogIG1lcmNoYW50
+    X2NvZGU6ICcxMjM0NTYnCiAgYXBpX2tleTogInNrX2FwaV9rZXkiCiAgY29uc3VtZXJfc2VjcmV0
+    OiAic2tfY29uc3VtZXJfc2VjcmV0IgogIHN0azoKICAgIHB1c2hfdHlwZTogIlVTU0QiCiAgY2Fs
+    bGJhY2tfcGF0aDogJy9kYXJhamEnCiAgYmFua19hY2NvdW50OiAjIEJhbmsgRGV0YWlscwogICAg
+    bmFtZTogJ3Rlc3RpbmctYWNjb3VudCcKICAgIG51bWJlcjogJzA5ODc2NTQzMjEnCiAgICBjb3Vu
+    dHJ5X2NvZGU6ICdLRU4nCgo=
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,8 +43,13 @@ spec:
         app: savings-automaton
     spec:
       securityContext:
+        privileged: false
         runAsNonRoot: true
         fsGroup: 1000
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: savings-automaton-configuration
       containers:
         - name: savings-automaton
           image: savings-automaton:latest
@@ -40,6 +62,10 @@ spec:
                 secretKeyRef:
                   name: savings-automaton-db-secret
                   key: DB_DATABASE_URL
+          volumeMounts:
+            - name: secret-volume
+              readOnly: true
+              mountPath: "/run/secrets/savings-automaton"
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true

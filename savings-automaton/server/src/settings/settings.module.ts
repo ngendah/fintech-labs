@@ -1,18 +1,35 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
 import { ApiSettings, JengaSettings } from './settings';
 
-const loadConfiguration = (): Record<string, any> => {
+function findFirst(paths: string[], filename: string): string | undefined {
+  for (const path of paths) {
+    const filePath = join(path, filename);
+    if (existsSync(filePath)) {
+      return filePath;
+    }
+  }
+}
+
+function loadConfiguration(): Record<string, any> {
+  const configurationPaths: string[] = [
+    join(__dirname, '../../'),
+    '/etc',
+    '/run/secrets',
+  ];
   const YAML_CONFIG_FILENAME = 'config.yaml';
-  const file = readFileSync(
-    join(__dirname, '../../', YAML_CONFIG_FILENAME),
-    'utf8',
-  );
+  const filePath = findFirst(configurationPaths, YAML_CONFIG_FILENAME);
+  if (!filePath) {
+    throw new Error(
+      `Configuration file ${YAML_CONFIG_FILENAME}, does not exists on the following paths: ${configurationPaths.join()}`,
+    );
+  }
+  const file = readFileSync(filePath, 'utf8');
   return yaml.load(file) as Record<string, any>;
-};
+}
 
 @Module({
   imports: [

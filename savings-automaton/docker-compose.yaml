@@ -1,14 +1,21 @@
 services:
   db:
-    image: postgres
+    image: postgres:14-bookworm
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: testpass
       POSTGRES_DB: savingautomaton
+      POSTGRES_HOST_AUTH_METHOD: trust
   server:
     image: savingautomaton
-    context: server
+    secrets:
+      - config
+    build:
+      context: ./server
     environment:
-      BACKEND_URL: "postgresql://user:testpass@db/savingautomaton"
+      BACKEND_URL: "postgresql://db/savingautomaton"
     ports:
       - 3000:3000
+
+secrets:
+  config:
+    file: ./config.yaml
+
