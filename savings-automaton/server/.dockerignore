@@ -1,0 +1,10 @@
+.dockerignore
+.env*
+.git*
+config.example.*
+node_modules
+coverage
+.prettierignore
+.prettierrc
+__tests__
+*.spec.ts
