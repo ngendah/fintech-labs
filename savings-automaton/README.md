@@ -5,6 +5,7 @@ A NodeJS(NestJS/Prisma) microservice that simulates automated recurring savings 
 ## Features
 
 * Create savings schedules via API.
+* Bank integration and use of USSD triggers.
 * Simulate recurring deposits.
 * Local or Kubernetes Deployment
 
@@ -52,4 +53,3 @@ For Kubernetes deployment, your cluster should be configured to pull images from
 * **Kubernetes (Cluster Internal):** Other services within your cluster can access the API at `http://savings-automaton-service:80`. For external access, change the `Service` type to `NodePort` or `LoadBalancer`, or set up an Ingress.
 
 -----
-
