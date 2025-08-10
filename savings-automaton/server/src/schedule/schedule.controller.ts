@@ -23,7 +23,7 @@ export class ScheduleController {
   @Post()
   async create(@Body() schedule: CreateScheduleDto, @CurrentUser() user: User) {
     const at = new Date(schedule.startDate);
-    let nextRunAt = nextRunDate(at, schedule.frequency);
+    const nextRunAt = nextRunDate(at, schedule.frequency);
     this.scheduleService.create({
       user: { connect: { id: user.id } },
       nextRunAt,

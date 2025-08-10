@@ -14,7 +14,7 @@ export class JengaService {
   constructor(
     private prisma: PrismaService,
     private jengaApi: JengaApi,
-  ) { }
+  ) {}
 
   async requestDeposit(
     deposit: DepositDto,

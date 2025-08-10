@@ -5,6 +5,6 @@ export class CreateScheduleDto {
   amount: number;
   frequency: Frequency;
   startDate: Date;
-  mobileNumber: String;
+  mobileNumber: string;
   telco: Telco;
 }
