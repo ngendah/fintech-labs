@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MerchantDto } from 'src/partners/daraja/dto/daraja.dto';
+import { MerchantDto } from 'src/partners/jenga/dto/jenga.dto';
 
 export const AUTHENTICATION = 'authentication/api/v3/authenticate/merchant';
 export const STK_PUSH = 'v3-apis/payment-api/v3.0/stkussdpush/initiate';
