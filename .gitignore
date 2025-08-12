@@ -25,3 +25,6 @@ crash.log
 
 # tf lock file
 **/.terraform.lock.hcl
+
+# configuration files
+**/config.yaml
