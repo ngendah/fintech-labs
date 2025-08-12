@@ -21,7 +21,8 @@ A NodeJS(NestJS/Prisma) microservice that simulates automated recurring savings 
     Build the Docker image and run the service.
 
     ```bash
-    docker compose run --build .
+    cp server/config.example.yaml config.yaml
+    docker compose up --build
     ```
 
 -----
