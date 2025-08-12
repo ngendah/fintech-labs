@@ -2,16 +2,18 @@ services:
   db:
     image: postgres:14-bookworm
     environment:
-      POSTGRES_USER: savingautomaton
+      POSTGRES_USER: automaton
       POSTGRES_HOST_AUTH_METHOD: trust
   server:
-    image: savingautomaton
+    image: savings-automaton
     secrets:
       - config.yaml
     build:
       context: ./server
     environment:
-      DATABASE_URL: "postgresql://savingautomaton@db/savingautomaton"
+      DATABASE_URL: "postgresql://automaton@db/automaton"
+    depends_on:
+    - db
     ports:
       - 3000:3000
 
