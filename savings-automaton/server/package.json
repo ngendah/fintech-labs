@@ -29,6 +29,7 @@
     "@nestjs/schedule": "^6.0.0",
     "@prisma/client": "^6.13.0",
     "bcrypt": "^6.0.0",
+    "js-yaml": "^4.1.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

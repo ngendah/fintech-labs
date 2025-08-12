@@ -8,3 +8,4 @@ coverage
 .prettierrc
 __tests__
 *.spec.ts
+Dockerfile
