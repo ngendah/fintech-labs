@@ -18,13 +18,15 @@ function loadConfiguration(): Record<string, any> {
   const configurationPaths: string[] = [
     join(__dirname, '../../'),
     '/etc',
+    '/tmp',
     '/run/secrets',
   ];
   const YAML_CONFIG_FILENAME = 'config.yaml';
   const filePath = findFirst(configurationPaths, YAML_CONFIG_FILENAME);
   if (!filePath) {
+    const filePaths = configurationPaths.reduce((p, s) => `${p}\n${s}`);
     throw new Error(
-      `Configuration file ${YAML_CONFIG_FILENAME}, does not exists on the following paths: ${configurationPaths.join()}`,
+      `Configuration file ${YAML_CONFIG_FILENAME}, does not exists on the following paths:\n${filePaths}`,
     );
   }
   const file = readFileSync(filePath, 'utf8');
