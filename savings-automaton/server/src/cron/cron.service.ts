@@ -58,6 +58,7 @@ export class CronService {
       executedAt: new Date(),
       status: request.status,
       message: request.message,
+      schedule: { connect: { id: schedule.id } },
     };
     await this.prisma.savingLog.create({ data });
     // TODO introduce retries
