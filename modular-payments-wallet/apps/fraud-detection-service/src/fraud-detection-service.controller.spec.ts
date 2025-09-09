@@ -11,7 +11,9 @@ describe('FraudDetectionServiceController', () => {
       providers: [FraudDetectionServiceService],
     }).compile();
 
-    fraudDetectionServiceController = app.get<FraudDetectionServiceController>(FraudDetectionServiceController);
+    fraudDetectionServiceController = app.get<FraudDetectionServiceController>(
+      FraudDetectionServiceController,
+    );
   });
 
   describe('root', () => {
