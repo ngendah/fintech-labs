@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FraudDetectionServiceController } from './fraud-detection-service.controller';
-import { FraudDetectionServiceService } from './fraud-detection-service.service';
+import { FraudDetectionServiceController } from './fraud.controller';
+import { FraudDetectionServiceService } from './fraud.service';
 
 @Module({
   imports: [],

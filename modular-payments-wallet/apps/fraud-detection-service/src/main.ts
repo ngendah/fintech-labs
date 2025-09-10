@@ -1,8 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { FraudDetectionServiceModule } from './fraud-detection-service.module';
+import { FraudDetectionServiceModule } from './fraud.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(FraudDetectionServiceModule);
-  await app.listen(process.env.port ?? 3000);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    FraudDetectionServiceModule,
+    {
+      transport: Transport.TCP,
+      options: {
+        port: 3001,
+      },
+    },
+  );
+  await app.listen();
 }
 bootstrap();
