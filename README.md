@@ -22,7 +22,7 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 - Query UI built with NextJS
 - Dockerized deployment
 
-### 3. Automated Savings Microservice
+### 3. Automated Savings Service
 
 **Folder**: [savings-automaton](./savings-automaton/)
 
@@ -60,3 +60,12 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 - CI/CD and observability with a DevOps mindset  
 
 ---
+
+## 🌍 Value
+
+- The project aims to serve as a reference for engineering teams and individuals working on cloud-native fintech solutions.
+- Lowers the barrier to entry by showing implementations from infra to monitoring.
+- Offer a realistic starting point for fintech startups.
+
+---
+

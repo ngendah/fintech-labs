@@ -1,6 +1,6 @@
 # 💸 Savings API
 
-A NodeJS(NestJS/Prisma) microservice that simulates automated recurring savings logic with Bank Integration(Equity Bank Kenya), ideal for fintech workflows.
+A NodeJS(NestJS/Prisma) API that simulates automated recurring savings logic with Bank Integration(Equity Bank Kenya), ideal for fintech workflows.
 
 ## Features
 
