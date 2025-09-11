@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { KycServiceController } from './kyc-service.controller';
-import { KycServiceService } from './kyc-service.service';
+import { KycServiceController } from './kyc.controller';
+import { KycServiceService } from './kyc.service';
 
 @Module({
   imports: [],
