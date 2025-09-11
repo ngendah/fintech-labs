@@ -3,3 +3,4 @@ export const KYC_SERVICE = Symbol('kyc-service');
 export const NOTIFICATION_SERVICE = Symbol('notification-service');
 
 export const fraudReviewEndpoint = 'fraud.detect';
+export const kycReviewEndpoint = 'kyc.review';

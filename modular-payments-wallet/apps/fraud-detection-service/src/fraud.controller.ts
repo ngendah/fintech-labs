@@ -7,7 +7,7 @@ import { fraudReviewEndpoint } from 'lib/common';
 export class FraudDetectionServiceController {
   constructor(
     private readonly fraudDetectionServiceService: FraudDetectionServiceService,
-  ) { }
+  ) {}
 
   @MessagePattern(fraudReviewEndpoint)
   async detect(documents: Record<string, any>[]) {
