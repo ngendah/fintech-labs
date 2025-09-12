@@ -1,7 +1,8 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy, TcpEvents } from '@nestjs/microservices';
 import { FRAUD_DETECTION_SERVICE, fraudReviewEndpoint } from 'lib/common';
 
+@Injectable()
 export class FraudService {
   private readonly logger = new Logger(FraudService.name);
   constructor(

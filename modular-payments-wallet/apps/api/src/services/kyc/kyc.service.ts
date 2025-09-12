@@ -1,7 +1,8 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy, TcpEvents } from '@nestjs/microservices';
 import { KYC_SERVICE, kycReviewEndpoint } from 'lib/common';
 
+@Injectable()
 export class KycService {
   private readonly logger = new Logger(KycService.name);
   constructor(
