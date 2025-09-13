@@ -8,4 +8,4 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [KycServiceController],
   providers: [KycServiceService],
 })
-export class KycServiceModule { }
+export class KycServiceModule {}

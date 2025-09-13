@@ -8,4 +8,4 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [FraudDetectionServiceController],
   providers: [FraudDetectionServiceService],
 })
-export class FraudDetectionServiceModule { }
+export class FraudDetectionServiceModule {}

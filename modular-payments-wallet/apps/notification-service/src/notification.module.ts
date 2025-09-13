@@ -6,4 +6,4 @@ import { ConfigModule } from '@nestjs/config';
   imports: [ConfigModule.forRoot({ isGlobal: true })],
   controllers: [NotificationServiceController],
 })
-export class NotificationServiceModule { }
+export class NotificationServiceModule {}
