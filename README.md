@@ -31,7 +31,19 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 - Integration with Equity Bank (Kenya) and USSD STK trigger implementation
 - Dockerized and Kubernetes deployment
 
-### 4. Monitoring & Alerts for Cloud Apps
+
+### 4. Modular Payments Wallet Micro-Services
+
+**Folder**: [modular-payments-wallet](./modular-payments-wallet/)
+
+- Node.js (NestJS) microservices architecture
+- Includes Fraud Detection, KYC, and Notification services
+- Simulated API calls to trigger microservices
+- Dockerized and Kubernetes deployment
+
+---
+
+### 5. Monitoring & Alerts for Cloud Apps
 
 **Folder**: [ops-monitoring](./ops-monitoring/)
 
