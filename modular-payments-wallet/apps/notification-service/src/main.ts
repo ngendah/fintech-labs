@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { NotificationServiceModule } from './notification.module';
 import {
   AsyncMicroserviceOptions,
-  MicroserviceOptions,
   Transport,
 } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
@@ -23,10 +22,13 @@ async function bootstrap() {
             cert: readFileSync(tlsCAFile, 'utf-8').toString(),
           };
         }
+        const host = configService.get('HOST', '0.0.0.0')
+        const port = configService.get('PORT', 3003)
         return {
           transport: Transport.TCP,
           options: {
-            port: configService.get('PORT', 3003),
+            host,
+            port,
             tlsOptions,
           },
         };

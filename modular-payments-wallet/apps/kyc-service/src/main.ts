@@ -19,10 +19,13 @@ async function bootstrap() {
             cert: readFileSync(tlsCAFile, 'utf-8').toString(),
           };
         }
+        const host = configService.get('HOST', '0.0.0.0')
+        const port = configService.get('PORT', 3002)
         return {
           transport: Transport.TCP,
           options: {
-            port: configService.get('PORT', 3002),
+            host,
+            port,
             tlsOptions,
           },
         };
