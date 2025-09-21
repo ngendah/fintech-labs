@@ -1,0 +1,44 @@
+services:
+ api:
+  image: modular-payments-wallet/api
+  build:
+    context: .
+  environment:
+    FRAUD_DETECTION_SERVICE_HOST: fraud-detection-service
+    KYC_SERVICE_HOST: kyc-service
+    NOTIFICATION_SERVICE_HOST: notification-service
+    NODE_ENV: production
+  ports:
+    - 3000:3000 
+  
+ fraud-detection-service:
+  image: modular-payments-wallet/fraud-service
+  build:
+    context: .
+  command:
+    - nest
+    - start
+    - fraud-detection-service
+  
+ kyc-service:
+  image: modular-payments-wallet/kyc-service
+  build:
+    context: .
+  command:
+    - nest
+    - start
+    - kyc-service
+  
+ notification-service:
+  image: modular-payments-wallet/notification-service
+  build:
+    context: .
+  command:
+    - nest
+    - start
+    - notification-service
+  
+# For network troubleshooting
+# net-tools:
+#  image: jonlabelle/network-tools
+#  command: tail -f /dev/null
