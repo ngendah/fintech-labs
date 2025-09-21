@@ -33,19 +33,19 @@ micro-service.
 1. To simulate api calls that trigger the fraud-detection micro-service send the request:
 ```api
 
-curl -X POST -H 'Content-Type: application/json' -d '{amount: 1000, mobileNumber: "0700900800"}' http://localhost:300/transaction
+curl -X POST -H 'Content-Type: application/json' -d '{amount: 1000, mobileNumber: "0700900800"}' http://localhost:3000/transaction
 ```
 
 2. To simulate api calls that trigger kyc(know-your-customer) micro-service send the request:
 ```api
 
-curl -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:300/user
+curl -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3000/user
 ```
 
 3. To simulate api calls that trigger notification micro-service send the request:
 ```api
 
-curl -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:300/wallet/balance
+curl -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3000/wallet/balance
 ```
 
 
