@@ -10,7 +10,7 @@ micro-service.
   - Fraud Detection Micro service. This is triggered whenever a customer executes a transaction.
   - KYC(know-your-customer) micro-service. This is triggered when a customer submits required documents.
   - notification micro-service. This is triggered to when a user or some other api call requires to notify a customer of important details
-* Docker and Kubernetes Deployment
+* Docker Deployment
 
 ----
 
