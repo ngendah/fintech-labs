@@ -16,10 +16,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
             transport: Transport.KAFKA,
             options: {
               client: {
+                clientId: `${KYC_SERVICE.toString()}-client`,
                 brokers: [uri],
               },
               consumer: {
                 groupId: KYC_SERVICE.toString(),
+              },
+              producer: {
+                allowAutoTopicCreation: true,
               },
             },
           };
@@ -31,4 +35,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   providers: [KycService],
   exports: [KycService],
 })
-export class KycModule {}
+export class KycModule { }

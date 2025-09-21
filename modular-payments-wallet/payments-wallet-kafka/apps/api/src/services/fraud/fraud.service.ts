@@ -1,9 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { FRAUD_DETECTION_SERVICE, fraudReviewEndpoint } from 'lib/common';
 
 @Injectable()
-export class FraudService {
+export class FraudService implements OnModuleInit {
   private readonly logger = new Logger(FraudService.name);
   constructor(
     @Inject(FRAUD_DETECTION_SERVICE)
@@ -14,5 +14,10 @@ export class FraudService {
     this.client.send(fraudReviewEndpoint, documents).subscribe((results) => {
       this.logger.debug(results);
     });
+  }
+
+  async onModuleInit() {
+    this.client.subscribeToResponseOf(fraudReviewEndpoint);
+    await this.client.connect();
   }
 }

@@ -16,10 +16,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
             transport: Transport.KAFKA,
             options: {
               client: {
+                clientId: `${FRAUD_DETECTION_SERVICE.toString()}-client`,
                 brokers: [uri],
               },
               consumer: {
                 groupId: FRAUD_DETECTION_SERVICE.toString(),
+              },
+              producer: {
+                allowAutoTopicCreation: true,
               },
             },
           };
@@ -31,4 +35,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   providers: [FraudService],
   exports: [FraudService],
 })
-export class FraudModule {}
+export class FraudModule { }

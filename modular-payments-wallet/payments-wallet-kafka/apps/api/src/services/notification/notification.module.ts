@@ -16,10 +16,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
             transport: Transport.KAFKA,
             options: {
               client: {
+                clientId: `${NOTIFICATION_SERVICE.toString()}-client`,
                 brokers: [uri],
               },
               consumer: {
                 groupId: NOTIFICATION_SERVICE.toString(),
+              },
+              producer: {
+                allowAutoTopicCreation: true,
               },
             },
           };
@@ -31,4 +35,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   providers: [NotificationService],
   exports: [NotificationService],
 })
-export class NotificationModule {}
+export class NotificationModule { }
