@@ -12,43 +12,21 @@ micro-service.
   - notification micro-service. This is triggered to when a user or some other api call requires to notify a customer of important details
 * Docker Deployment
 
-----
+## Implementation
 
-## Setup
+There are 2 Implementation:
 
-### Local Deployment
+1. Using tcp with optional TLS
+2. Using Kafka
 
-1. **Install Docker:** Ensure you have [Docker](https://docs.docker.com/) installed.
+## Micro-service structure:
+How services are partitioned is important as it impacts:
 
-2. **Build and Run:**
-    Build the Docker image and run the service.
+1. Development costs - Personnel and Time
+2. Infrastructure costs 
+3. Systems security
 
-    ```bash
-    docker compose up --build
-    ```
+Theories how this can be achieved include:
 
------
-### Accessing the API
-
-1. To simulate api calls that trigger the fraud-detection micro-service send the request:
-```api
-
-curl -X POST -H 'Content-Type: application/json' -d '{amount: 1000, mobileNumber: "0700900800"}' http://localhost:300/transaction
-```
-
-2. To simulate api calls that trigger kyc(know-your-customer) micro-service send the request:
-```api
-
-curl -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:300/user
-```
-
-3. To simulate api calls that trigger notification micro-service send the request:
-```api
-
-curl -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:300/wallet/balance
-```
-
-
------
-
-
+1. [Domain Driven Design](https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices)
+2. [Conway's Laws](https://alibaba-cloud.medium.com/conways-law-a-theoretical-basis-for-the-microservice-architecture-c666f7fcc66a)
