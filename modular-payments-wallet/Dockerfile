@@ -1,6 +1,6 @@
 FROM node:24-slim
 RUN apt-get update -y \
-    && apt-get install -y openssl tini \
+    && apt-get install -y openssl tini lsof \
     && npm i -g @nestjs/cli \
     && useradd -MUu 1001 fintech-labs
 USER fintech-labs

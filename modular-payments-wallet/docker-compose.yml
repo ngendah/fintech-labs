@@ -10,6 +10,12 @@ services:
     NODE_ENV: production
   ports:
     - 3000:3000 
+  healthcheck:
+    test: ["CMD-SHELL", "lsof -i -P -n | grep -e 3000"]
+    interval: 10s
+    timeout: 500ms
+    retries: 3
+    start_period: 5s
 
  fraud-detection-service:
   image: modular-payments-wallet/fraud-service
@@ -19,6 +25,12 @@ services:
     - nest
     - start
     - fraud-detection-service
+  healthcheck:
+    test: ["CMD-SHELL", "lsof -i -P -n | grep -e 3001"]
+    interval: 10s
+    timeout: 500ms
+    retries: 3
+    start_period: 5s
 
  kyc-service:
   image: modular-payments-wallet/kyc-service
@@ -28,6 +40,12 @@ services:
     - nest
     - start
     - kyc-service
+  healthcheck:
+    test: ["CMD-SHELL", "lsof -i -P -n | grep -e 3002"]
+    interval: 10s
+    timeout: 500ms
+    retries: 3
+    start_period: 5s
 
  notification-service:
   image: modular-payments-wallet/notification-service
@@ -37,8 +55,14 @@ services:
     - nest
     - start
     - notification-service
+  healthcheck:
+    test: ["CMD-SHELL", "lsof -i -P -n | grep -e 3003"]
+    interval: 10s
+    timeout: 500ms
+    retries: 3
+    start_period: 5s
 
 # For network troubleshooting
- net-tools:
-  image: jonlabelle/network-tools
-  command: tail -f /dev/null
+# net-tools:
+#  image: jonlabelle/network-tools
+#  command: tail -f /dev/null
