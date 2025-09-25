@@ -17,6 +17,7 @@ async function bootstrap() {
               brokers: [uri],
             },
             consumer: {
+              allowAutoTopicCreation: true,
               groupId: KYC_SERVICE.toString(),
             },
           },

@@ -17,6 +17,7 @@ async function bootstrap() {
               brokers: [uri],
             },
             consumer: {
+              allowAutoTopicCreation: true,
               groupId: FRAUD_DETECTION_SERVICE.toString(),
             },
           },
