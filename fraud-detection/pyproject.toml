@@ -1,0 +1,20 @@
+[project]
+name = "fraud-detection"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "duckdb>=1.4.0",
+    "httpx>=0.28.1",
+    "numpy>=2.3.3",
+    "prefect>=3.4.20",
+    "pydantic>=2.11.9",
+    "pydantic-settings>=2.11.0",
+    "scikit-learn>=1.7.2",
+]
+
+[tool.uv.workspace]
+members = [
+    "trainer",
+]
