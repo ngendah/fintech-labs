@@ -4,22 +4,31 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 
 ---
 
-## 🚀 Project Highlights
+## 📁 Projects
+
+1. Infrastructure as Code (IaC)
+2. LLM Financial Assistant
+3. Automated Savings Service
+4. Modular Payments Wallet Microservices
+5. Fraud Detection Data Pipeline
+6. Monitoring & Alerts for Cloud Apps
+
+## 🚀 Highlights
 
 ### 1. Infrastructure as Code (IaC)
 
 **Folder**: [terraform-infra](./terraform-infra/)
 
 - Modular AWS setup using Terraform (VPC, RDS, S3)
-- State management and Secrets handling
+- State management and secrets handling
 
 ### 2. LLM Financial Assistant
 
 **Folder**: [financial-assistant](./financial-assistant/)
 
-- LLM Agents for financial insight generation
-- Restful API built with FastAPI
-- Query UI built with NextJS
+- LLM agents for financial insight generation
+- RESTful API built with FastAPI
+- Query UI built with Next.js
 - Dockerized deployment
 
 ### 3. Automated Savings Service
@@ -27,35 +36,34 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 **Folder**: [savings-automaton](./savings-automaton/)
 
 - Backend logic to simulate recurring savings schedules
-- RESTful API built in NodeJS(NestJS/Prisma) with PostgreSQL
-- Integration with Equity Bank (Kenya) and USSD STK trigger implementation
-- Dockerized and Kubernetes deployment
+- RESTful API in Node.js (NestJS + Prisma) with PostgreSQL
+- Integration with Equity Bank (Kenya) and USSD STK trigger
+- Dockerized and Kubernetes-ready
 
-
-### 4. Modular Payments Wallet Micro-Services
+### 4. Modular Payments Wallet Microservices
 
 **Folder**: [modular-payments-wallet](./modular-payments-wallet/)
 
-- Node.js (NestJS) microservices architecture
-- Includes Fraud Detection, KYC, and Notification services
-- Simulated API calls to trigger microservices
-- Dockerized and Kubernetes deployment
+- Microservices architecture in Node.js (NestJS)
+- Services include Fraud Detection, KYC, and Notifications
+- Simulated API calls to trigger inter-service communication
+- Dockerized and Kubernetes-ready
 
-### 5. Fraud Detection Data pipeline
+### 5. Fraud Detection Data Pipeline
 
-**Folder**: [fraud-detection](./fraud-detection)
+**Folder**: [fraud-detection](./fraud-detection/)
 
 - Python-based Prefect pipeline for data extraction and fraud model training  
-- Utilizes a Kaggle dataset and a scikit-learn model for fraud detection
-- Dockerized deployment
+- Uses Kaggle dataset and scikit-learn for fraud detection  
+- Dockerized for deployment and reproducibility
 
 ### 6. Monitoring & Alerts for Cloud Apps
 
 **Folder**: [ops-monitoring](./ops-monitoring/)
 
-- Real-time dashboards for service health
-- Custom alerts for latency, CPU, or payment failures
-- Simulated logs or fake payment traffic using a script
+- Real-time dashboards for service health monitoring
+- Custom alerts for latency, CPU usage, and payment failures
+- Simulated logs and fake payment traffic via script
 
 ---
 
