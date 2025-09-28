@@ -41,9 +41,15 @@ A compact, real-world portfolio of cloud-native engineering projects for fintech
 - Simulated API calls to trigger microservices
 - Dockerized and Kubernetes deployment
 
----
+### 5. Fraud Detection Data pipeline
 
-### 5. Monitoring & Alerts for Cloud Apps
+**Folder**: [fraud-detection](./fraud-detection)
+
+- Python-based Prefect pipeline for data extraction and fraud model training  
+- Utilizes a Kaggle dataset and a scikit-learn model for fraud detection
+- Dockerized deployment
+
+### 6. Monitoring & Alerts for Cloud Apps
 
 **Folder**: [ops-monitoring](./ops-monitoring/)
 
