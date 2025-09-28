@@ -1,25 +1,25 @@
-Fraud Detection Trainer Data Pipeline
+Fraud Detection Data Pipeline
 ====
 
 WIP
 
 [Kaggle fraud dataset ](https://www.kaggle.com/datasets/ealaxi/paysim1/data)
 
-Results with a split of 40%:
+
+Training results:
 
 ```
-Accuracy: 100.00%
+Accuracy: 99.04%
 
 Classification Report:
                precision    recall  f1-score   support
 
-          ok       1.00      1.00      1.00   1143826
-     isFraud       1.00      0.99      0.99      1446
+          ok       1.00      0.98      0.99      1044
+     isFraud       0.98      1.00      0.99      1044
 
-    accuracy                           1.00   1145272
-   macro avg       1.00      0.99      1.00   1145272
-weighted avg       1.00      1.00      1.00   1145272
-
+    accuracy                           0.99      2088
+   macro avg       0.99      0.99      0.99      2088
+weighted avg       0.99      0.99      0.99      2088
 ```
 
 Validation results:
@@ -27,6 +27,4 @@ Validation results:
 ```
 Cross-validation scores: [0.99645928 0.99594732 0.99746322 0.99646286 0.99747092]
 Average accuracy: 0.9967607178072914
-```
-```
 ```
