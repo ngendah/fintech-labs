@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import override
 
 from imblearn.under_sampling import NearMiss
 from joblib import dump, load
@@ -8,6 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.svm import SVC
 
 
 class Model(ABC):
@@ -109,17 +111,44 @@ class Dataset:
 
 
 class RandomForestModel(Model):
-    def __init__(self):
-        self.model = RandomForestClassifier(n_estimators=100, random_state=42)
+    def __init__(self, estimators: int = 2):
+        self.model = RandomForestClassifier(
+            n_estimators=estimators, random_state=42
+        )
 
+    @override
     def fit(self, X, y):
         return self.model.fit(X, y)
 
+    @override
     def predict(self, x):
         return self.model.predict(x)
 
+    @override
     def save(self, file_url: FileUrl):
         return dump(self.model, str(file_url))
 
+    @override
+    def load(self, file_url: FileUrl):
+        self.model = load(str(file_url))
+
+
+class SupportVectorClassifierModel(Model):
+    def __init__(self):
+        self.model = SVC(gamma="auto")
+
+    @override
+    def fit(self, X, y):
+        return self.model.fit(X, y)
+
+    @override
+    def predict(self, x):
+        return self.model.predict(x)
+
+    @override
+    def save(self, file_url: FileUrl):
+        return dump(self.model, str(file_url))
+
+    @override
     def load(self, file_url: FileUrl):
         self.model = load(str(file_url))
