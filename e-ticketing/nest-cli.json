@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/authnz/tsconfig.app.json"
       }
     },
+    "booking": {
+      "type": "application",
+      "root": "apps/booking",
+      "entryFile": "main",
+      "sourceRoot": "apps/booking/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/booking/tsconfig.app.json"
+      }
+    },
     "e-ticketing": {
       "type": "application",
       "root": "apps/api-gateway",
@@ -26,6 +35,24 @@
       "sourceRoot": "apps/api-gateway/src",
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "payment": {
+      "type": "application",
+      "root": "apps/payment",
+      "entryFile": "main",
+      "sourceRoot": "apps/payment/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/payment/tsconfig.app.json"
+      }
+    },
+    "register": {
+      "type": "application",
+      "root": "apps/register",
+      "entryFile": "main",
+      "sourceRoot": "apps/register/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/register/tsconfig.app.json"
       }
     }
   }
