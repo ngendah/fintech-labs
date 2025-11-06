@@ -10,4 +10,5 @@ export * from './repositories/receipt.repository';
 export * from './repositories/registration.repository';
 export * from './repositories/ticket.repository';
 export * from './modules/mongo.module';
+export * from './modules/json-web-token-module';
 export * from './create-microservice';
