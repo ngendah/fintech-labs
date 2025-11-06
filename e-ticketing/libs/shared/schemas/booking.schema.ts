@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
 @Schema()
@@ -17,5 +17,7 @@ export class Booking {
 }
 
 export type BookingDocument = HydratedDocument<Booking>;
-
 export const BookingSchema = SchemaFactory.createForClass(Booking);
+export const BookingSchemaModule = MongooseModule.forFeature([
+  { name: Booking.name, schema: BookingSchema },
+]);
