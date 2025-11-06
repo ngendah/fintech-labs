@@ -1,8 +1,8 @@
-import { NestFactory } from '@nestjs/core';
 import { BookingModule } from './booking.module';
+import { createMicroServiceApp } from 'libs/shared';
 
 async function bootstrap() {
-  const app = await NestFactory.create(BookingModule);
-  await app.listen(process.env.port ?? 3000);
+  const app = await createMicroServiceApp(BookingModule);
+  await app.listen();
 }
 bootstrap();

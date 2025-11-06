@@ -1,8 +1,8 @@
-import { NestFactory } from '@nestjs/core';
 import { PaymentModule } from './payment.module';
+import { createMicroServiceApp } from 'libs/shared';
 
 async function bootstrap() {
-  const app = await NestFactory.create(PaymentModule);
-  await app.listen(process.env.port ?? 3000);
+  const app = await createMicroServiceApp(PaymentModule);
+  await app.listen();
 }
 bootstrap();
