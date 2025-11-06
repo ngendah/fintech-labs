@@ -11,6 +11,9 @@ export class Booking {
 
   @Prop({ required: true })
   seats: string[];
+
+  @Prop({ required: true, unique: true, index: true })
+  bookingNo: string;
 }
 
 export type BookingDocument = HydratedDocument<Booking>;
