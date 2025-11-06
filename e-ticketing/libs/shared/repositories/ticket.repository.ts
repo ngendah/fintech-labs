@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Ticket, TicketDocument } from '../schemas/ticket.schema';
 
 @Injectable()
-export default class TicketRepository {
+export class TicketRepository {
   constructor(@InjectModel(Ticket.name) private ticketModel: Model<Ticket>) {}
 
   async new(ticket: Ticket): Promise<TicketDocument | null> {

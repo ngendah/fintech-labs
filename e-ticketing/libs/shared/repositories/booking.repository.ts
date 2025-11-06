@@ -5,7 +5,7 @@ import { Booking, BookingDocument } from '../schemas/booking.schema';
 import { bookingNoGenerator } from '../sequence-generator';
 
 @Injectable()
-export default class BookingRepository {
+export class BookingRepository {
   constructor(
     @InjectModel(Booking.name) private bookingModel: Model<Booking>,
   ) {}

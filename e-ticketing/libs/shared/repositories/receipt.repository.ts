@@ -5,7 +5,7 @@ import { receiptNoGenerator } from '../sequence-generator';
 import { Receipt, ReceiptDocument } from '../schemas/receipt.schema';
 
 @Injectable()
-export default class ReceiptRepository {
+export class ReceiptRepository {
   constructor(
     @InjectModel(Receipt.name) private receiptModel: Model<Receipt>,
   ) {}

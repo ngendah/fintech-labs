@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export default class AuthnzRepository {
+export class AuthnzRepository {
   constructor(
     @InjectModel(User.name) private registrationModel: Model<User>,
     private jwtService: JwtService,

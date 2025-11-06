@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export default class RegistrationRepository {
+export class RegistrationRepository {
   constructor(@InjectModel(User.name) private registrationModel: Model<User>) {}
 
   async new(user: User): Promise<UserDocument> {
