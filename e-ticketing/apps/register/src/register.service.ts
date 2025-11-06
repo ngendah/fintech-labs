@@ -1,5 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AuthnzRepository, RegistrationRepository, User } from 'libs/shared';
+import {
+  MicroServiceException,
+  RpcExceptionCode,
+} from 'libs/shared/rpc-exception';
 
 @Injectable()
 export class RegisterService {
@@ -14,12 +18,15 @@ export class RegisterService {
     password: string;
   }): Promise<string> {
     if (await this.registrationRepository.get(user.email)) {
-      throw new HttpException(`User already exists`, HttpStatus.FORBIDDEN);
+      throw new MicroServiceException(
+        `User already exists`,
+        RpcExceptionCode.USER_EXISTS,
+      );
     }
     if (!(await this.registrationRepository.new(user as User))) {
-      throw new HttpException(
+      throw new MicroServiceException(
         `Unable to create new user`,
-        HttpStatus.FORBIDDEN,
+        RpcExceptionCode.INVALID_CREDENTIALS,
       );
     }
     return this.authnzRepository.authn(user.email, user.password);
