@@ -1,0 +1,19 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  nats:
+    image: nats:2.12-alpine
+    container_name: nats
+    ports:
+      - "4222:4222"  # client connections
+      - "8222:8222"  # HTTP monitoring endpoint
+      - "6222:6222"  # clustering port
+
+volumes:
+  mongo_data:

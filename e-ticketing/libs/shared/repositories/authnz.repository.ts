@@ -8,12 +8,12 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthnzRepository {
   constructor(
-    @InjectModel(User.name) private registrationModel: Model<User>,
+    @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
   ) {}
 
   async authn(email: string, password: string): Promise<string> {
-    const user = await this.registrationModel.findOne({ email }).exec();
+    const user = await this.userModel.findOne({ email }).exec();
     if (!user) {
       throw new Error(`User not found`);
     }
