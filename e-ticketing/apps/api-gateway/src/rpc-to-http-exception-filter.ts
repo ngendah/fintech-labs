@@ -5,15 +5,14 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
+import { RpcExceptionCodeToHttpStatusCode } from 'libs/shared/rpc-exception';
 
 @Catch(RpcException)
 export class RpcToHttpExceptionFilter implements ExceptionFilter {
   catch(exception: RpcException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-
     const error = exception.getError();
-
     let message = 'Internal server error';
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -21,7 +20,9 @@ export class RpcToHttpExceptionFilter implements ExceptionFilter {
       message = error;
     } else if (typeof error === 'object' && error !== null) {
       message = error['message'] ?? message;
-      status = this.mapErrorCodeToStatus(error['code']);
+      status =
+        RpcExceptionCodeToHttpStatusCode[error['code']] ??
+        HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     response.status(status).json({
@@ -29,18 +30,5 @@ export class RpcToHttpExceptionFilter implements ExceptionFilter {
       message,
       error: HttpStatus[status],
     });
-  }
-
-  private mapErrorCodeToStatus(code?: string): HttpStatus {
-    switch (code) {
-      case 'USER_EXISTS':
-        return HttpStatus.FORBIDDEN;
-      case 'USER_NOT_FOUND':
-        return HttpStatus.NOT_FOUND;
-      case 'INVALID_CREDENTIALS':
-        return HttpStatus.UNAUTHORIZED;
-      default:
-        return HttpStatus.INTERNAL_SERVER_ERROR;
-    }
   }
 }

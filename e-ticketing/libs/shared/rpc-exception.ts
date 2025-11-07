@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 
 export enum RpcExceptionCode {
@@ -13,3 +14,11 @@ export class MicroServiceException extends RpcException {
     super({ message, code });
   }
 }
+
+export const RpcExceptionCodeToHttpStatusCode = {
+  [RpcExceptionCode.USER_EXISTS]: HttpStatus.FORBIDDEN,
+  [RpcExceptionCode.USER_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [RpcExceptionCode.INVALID_CREDENTIALS]: HttpStatus.UNAUTHORIZED,
+  [RpcExceptionCode.BOOKING_EXCEPTION]: HttpStatus.BAD_REQUEST,
+  [RpcExceptionCode.PAYMENT_COLLECTION_EXCEPTION]: HttpStatus.BAD_REQUEST,
+};
