@@ -8,7 +8,7 @@
     "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/e-ticketing",
+  "root": "apps/api-gateway",
   "projects": {
     "authnz": {
       "type": "application",
@@ -28,7 +28,7 @@
         "tsConfigPath": "apps/booking/tsconfig.app.json"
       }
     },
-    "e-ticketing": {
+    "api-gateway": {
       "type": "application",
       "root": "apps/api-gateway",
       "entryFile": "main",
