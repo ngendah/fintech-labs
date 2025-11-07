@@ -11,6 +11,12 @@ export class Receipt {
 
   @Prop({ required: true, index: true })
   invoiceNo: string;
+
+  @Prop({ required: true })
+  paymentPhoneNo: string;
+
+  @Prop({ required: true })
+  emailTo: string;
 }
 
 export type ReceiptDocument = HydratedDocument<Receipt>;

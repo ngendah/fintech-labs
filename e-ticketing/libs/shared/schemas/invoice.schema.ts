@@ -11,12 +11,6 @@ export class Invoice {
 
   @Prop({ required: true, unique: true, index: true })
   bookingNo: string;
-
-  @Prop({ required: true })
-  paymentPhoneNo: string;
-
-  @Prop({ required: true })
-  emailTo: string;
 }
 
 export type InvoiceDocument = HydratedDocument<Invoice>;

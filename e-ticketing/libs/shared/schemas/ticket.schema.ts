@@ -10,7 +10,7 @@ export class Ticket {
   seatNo: string;
 
   @Prop({ required: true, index: true })
-  receiptNo: string;
+  invoiceNo: string;
 }
 
 export type TicketDocument = HydratedDocument<Ticket>;
