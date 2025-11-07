@@ -26,10 +26,10 @@ export class BookingRepository {
     return booking.save({ session });
   }
 
-  async get(ticketNo: string): Promise<BookingDocument> {
-    const booking = await this.bookingModel.findOne({ ticketNo }).exec();
+  async get(bookingNo: string): Promise<BookingDocument> {
+    const booking = await this.bookingModel.findOne({ bookingNo }).exec();
     if (!booking) {
-      throw new Error(`Ticket no ${ticketNo} not found`);
+      throw new Error(`Booking no ${bookingNo} not found`);
     }
     return booking;
   }

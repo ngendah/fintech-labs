@@ -15,8 +15,6 @@ export class InvoiceRepository {
     invoice: {
       bookingNo: string;
       amount: number;
-      paymentPhoneNo: string;
-      emailTo: string;
     },
     session?: mongoose.ClientSession,
   ): Promise<InvoiceDocument | null> {

@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { receiptNoGenerator } from '../sequence-generator';
 import { Receipt, ReceiptDocument } from '../schemas/receipt.schema';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class ReceiptRepository {
@@ -10,26 +11,46 @@ export class ReceiptRepository {
     @InjectModel(Receipt.name) private receiptModel: Model<Receipt>,
   ) {}
 
-  async new({
-    invoiceNo,
-    amount,
-  }: {
-    invoiceNo: string;
-    amount: number;
-  }): Promise<ReceiptDocument | null> {
+  async new(
+    payment: {
+      invoiceNo: string;
+      amount: number;
+      paymentPhoneNo: string;
+      emailTo: string;
+    },
+    session?: mongoose.ClientSession,
+  ): Promise<ReceiptDocument | null> {
     const receipt = new this.receiptModel({
-      invoiceNo,
-      amount,
+      ...payment,
       receiptNo: receiptNoGenerator(),
     });
-    return receipt.save();
+    return receipt.save({ session });
   }
 
-  async get(receiptNo: string): Promise<ReceiptDocument> {
-    const receipt = await this.receiptModel.findOne({ receiptNo }).exec();
-    if (!receipt) {
+  async get(receiptNo: string): Promise<ReceiptDocument[]> {
+    const receipts = await this.receiptModel.find({ receiptNo }).exec();
+    if (!receipts.length) {
       throw new Error(`Invoice no ${receiptNo} not found`);
     }
-    return receipt;
+    return receipts;
+  }
+
+  async total(invoiceNo: string): Promise<number> {
+    const result = await this.receiptModel
+      .aggregate([
+        {
+          $match: {
+            invoiceNo,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: '$amount' },
+          },
+        },
+      ])
+      .exec();
+    return result.length > 0 ? result[0].totalAmount : 0;
   }
 }
