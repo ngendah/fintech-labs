@@ -7,9 +7,15 @@ import {
   MongoModule,
   UserSchemaModule,
 } from 'libs/shared';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [MongoModule, UserSchemaModule, JsonWebTokenModule],
+  imports: [
+    ConfigModule.forRoot(),
+    MongoModule,
+    UserSchemaModule,
+    JsonWebTokenModule,
+  ],
   controllers: [AuthnzController],
   providers: [AuthnzRepository, AuthnzService],
 })

@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
-import { createMicroserviceClientModule, APP_NAME } from 'libs/shared';
+import { createMicroserviceClientModule, AUTHNZ_SERVICE } from 'libs/shared';
+import { AuthnzService } from './authnz.service';
+import { AuthnzController } from './authnz.controller';
 
 @Module({
-  imports: [createMicroserviceClientModule(APP_NAME)],
+  imports: [createMicroserviceClientModule(AUTHNZ_SERVICE)],
+  providers: [AuthnzService],
+  controllers: [AuthnzController],
 })
 export class AuthnzModule {}
