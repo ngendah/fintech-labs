@@ -15,3 +15,4 @@ export * from './modules/mongo.module';
 export * from './modules/json-web-token-module';
 export * from './create-microservice';
 export * from './endpoints';
+export * from './constants';
