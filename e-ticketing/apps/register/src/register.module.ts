@@ -8,9 +8,15 @@ import {
   RegistrationRepository,
   UserSchemaModule,
 } from 'libs/shared';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [MongoModule, UserSchemaModule, JsonWebTokenModule],
+  imports: [
+    ConfigModule.forRoot(),
+    MongoModule,
+    UserSchemaModule,
+    JsonWebTokenModule,
+  ],
   controllers: [RegisterController],
   providers: [RegistrationRepository, AuthnzRepository, RegisterService],
 })

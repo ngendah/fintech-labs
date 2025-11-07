@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { AuthnzRepository, RegistrationRepository, User } from 'libs/shared';
+import {
+  AuthnzRepository,
+  RegistrationRepository,
+  User,
+  UserDto,
+} from 'libs/shared';
 import {
   MicroServiceException,
   RpcExceptionCode,
@@ -12,11 +17,7 @@ export class RegisterService {
     private readonly authnzRepository: AuthnzRepository,
   ) {}
 
-  async register(user: {
-    username: string;
-    email: string;
-    password: string;
-  }): Promise<string> {
+  async register(user: UserDto): Promise<string> {
     if (await this.registrationRepository.get(user.email)) {
       throw new MicroServiceException(
         `User already exists`,
