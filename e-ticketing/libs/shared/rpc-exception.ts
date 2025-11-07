@@ -5,6 +5,7 @@ export enum RpcExceptionCode {
   USER_NOT_FOUND = 2,
   INVALID_CREDENTIALS = 3,
   BOOKING_EXCEPTION = 4,
+  PAYMENT_COLLECTION_EXCEPTION = 5,
 }
 
 export class MicroServiceException extends RpcException {
