@@ -5,9 +5,11 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DynamicModule } from '@nestjs/common';
+import { DynamicModule, ForwardReference, Type } from '@nestjs/common';
 
-export const createMicroServiceApp = async (module) =>
+type IEntryNestModule = Type<any> | DynamicModule | ForwardReference | Promise<IEntryNestModule>;
+
+export const createMicroServiceApp = async (module: IEntryNestModule, name: string) =>
   NestFactory.createMicroservice<AsyncMicroserviceOptions>(module, {
     useFactory: (config: ConfigService) => {
       const host = config.get('NATS_HOST', 'localhost');
@@ -15,6 +17,7 @@ export const createMicroServiceApp = async (module) =>
       return {
         transport: Transport.NATS,
         options: {
+          queue: name,
           servers: [`nats://${host}:${port}`],
         },
       };
@@ -33,6 +36,7 @@ export const createMicroserviceClientModule = (name: string) => {
         return {
           transport: Transport.NATS,
           options: {
+            queue: name,
             servers: [`nats://${host}:${port}`],
           },
         };
