@@ -19,8 +19,6 @@ export class BookingService {
     userId: string;
     eventId: string;
     seats: string[];
-    paymentPhoneNo: string;
-    emailTo: string;
   }): Promise<string> {
     const session = await this.connection.startSession();
     return session.withTransaction(async () => {
@@ -40,8 +38,6 @@ export class BookingService {
         {
           bookingNo: book.bookingNo,
           amount,
-          paymentPhoneNo: booking.paymentPhoneNo,
-          emailTo: booking.emailTo,
         },
         session,
       );
