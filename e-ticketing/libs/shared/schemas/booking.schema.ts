@@ -3,10 +3,10 @@ import { HydratedDocument } from 'mongoose';
 
 @Schema()
 export class Booking {
-  @Prop({ required: true, unique: true, index: true })
+  @Prop({ required: true, index: true })
   userId: string;
 
-  @Prop({ required: true, unique: true, index: true })
+  @Prop({ required: true, index: true })
   eventId: string;
 
   @Prop({ required: true })

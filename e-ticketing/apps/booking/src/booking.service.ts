@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { BookingRepository, InvoiceRepository } from 'libs/shared';
+import {
+  UserBookingDto,
+  BookingId,
+  BookingRepository,
+  InvoiceRepository,
+  BookingDocument,
+} from 'libs/shared';
 import {
   MicroServiceException,
   RpcExceptionCode,
@@ -15,18 +21,35 @@ export class BookingService {
     @InjectConnection() private readonly connection: mongoose.Connection,
   ) {}
 
-  async book(booking: {
-    userId: string;
-    eventId: string;
-    seats: string[];
-  }): Promise<string> {
+  async book(booking: UserBookingDto): Promise<BookingId> {
     const session = await this.connection.startSession();
-    return session.withTransaction(async () => {
-      const book = await this.bookingRepository.new(
-        booking.userId,
-        booking.eventId,
-        booking.seats,
-      );
+    return session.withTransaction(async (session) => {
+      var book: BookingDocument[] | BookingDocument | null =
+        await this.bookingRepository.find(booking.userId, booking.eventId);
+      if (!book) {
+        book = await this.bookingRepository.new(
+          booking.userId,
+          booking.eventId,
+          booking.seats,
+        );
+      } else {
+        const bookedSeats = new Set(book.flatMap((b) => b.seats));
+        const requestedSeats = new Set(booking.seats);
+        const newSeats = [...requestedSeats].filter(
+          (seat) => !bookedSeats.has(seat),
+        );
+        if (newSeats.length == 0) {
+          throw new MicroServiceException(
+            `Unable to create booking for event ${booking.eventId}, already exists`,
+            RpcExceptionCode.BOOKING_EXCEPTION,
+          );
+        }
+        book = await this.bookingRepository.new(
+          booking.userId,
+          booking.eventId,
+          newSeats,
+        );
+      }
       if (!book) {
         throw new MicroServiceException(
           `Unable to create booking for event ${booking.eventId}`,
@@ -34,7 +57,7 @@ export class BookingService {
         );
       }
       const amount = this.calculateBookingCost(booking.seats);
-      const invoice = this.invoiceRepository.new(
+      const invoice = await this.invoiceRepository.new(
         {
           bookingNo: book.bookingNo,
           amount,
@@ -47,7 +70,7 @@ export class BookingService {
           RpcExceptionCode.BOOKING_EXCEPTION,
         );
       }
-      return book.bookingNo;
+      return { bookingNo: book.bookingNo, invoiceNo: invoice.invoiceNo };
     });
   }
 

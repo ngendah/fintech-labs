@@ -26,6 +26,15 @@ export class BookingRepository {
     return booking.save({ session });
   }
 
+  async find(userId: string, eventId: string): Promise<BookingDocument[]> {
+    return this.bookingModel
+      .find({
+        userId,
+        eventId,
+      })
+      .exec();
+  }
+
   async get(bookingNo: string): Promise<BookingDocument> {
     const booking = await this.bookingModel.findOne({ bookingNo }).exec();
     if (!booking) {

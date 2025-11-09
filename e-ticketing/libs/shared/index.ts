@@ -1,4 +1,5 @@
 export * from './dtos/auth.dto';
+export * from './dtos/booking.dto';
 export * from './dtos/user.dto';
 export * from './schemas/booking.schema';
 export * from './schemas/invoice.schema';

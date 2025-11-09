@@ -7,5 +7,6 @@ import { AuthnzController } from './authnz.controller';
   imports: [createMicroserviceClientModule(AUTHNZ_SERVICE)],
   providers: [AuthnzService],
   controllers: [AuthnzController],
+  exports: [AuthnzService],
 })
 export class AuthnzModule {}
