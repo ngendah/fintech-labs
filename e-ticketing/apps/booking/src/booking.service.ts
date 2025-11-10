@@ -19,7 +19,7 @@ export class BookingService {
     private readonly bookingRepository: BookingRepository,
     private readonly invoiceRepository: InvoiceRepository,
     @InjectConnection() private readonly connection: mongoose.Connection,
-  ) { }
+  ) {}
 
   async book(booking: UserBookingDto): Promise<BookingId> {
     const session = await this.connection.startSession();
@@ -90,7 +90,9 @@ export class BookingService {
     if (invoices.length == 0) {
       return [];
     }
-    const bookingMap = new Map(bookings.map(({ bookingNo, seats }) => [bookingNo, seats]))
+    const bookingMap = new Map(
+      bookings.map(({ bookingNo, seats }) => [bookingNo, seats]),
+    );
     return invoices.map((invoice) => ({
       bookingNo: invoice.bookingNo,
       invoiceNo: invoice.invoiceNo,

@@ -14,6 +14,7 @@ import {
   TicketRepository,
   TicketSchemaModule,
 } from 'libs/shared';
+import { TicketingService } from './ticketing.service';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import {
     ReceiptRepository,
     TicketRepository,
     PaymentService,
+    TicketingService,
   ],
 })
 export class PaymentModule {}

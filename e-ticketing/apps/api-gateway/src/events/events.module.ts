@@ -9,4 +9,4 @@ import { BOOKING_SERVICE, createMicroserviceClientModule } from 'libs/shared';
   controllers: [EventsController],
   providers: [EventsService],
 })
-export class EventsModule { }
+export class EventsModule {}

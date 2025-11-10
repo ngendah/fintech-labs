@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class EventsService {
-  constructor(@Inject(BOOKING_SERVICE) private readonly client: ClientNats) { }
+  constructor(@Inject(BOOKING_SERVICE) private readonly client: ClientNats) {}
 
   list(booking: Omit<UserBookingDto, 'seats'>): Observable<BookingId[]> {
     return this.client.send<BookingId[]>(EndPoint.BOOKING_LIST, booking);

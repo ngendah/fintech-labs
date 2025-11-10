@@ -21,7 +21,7 @@ export const User = createParamDecorator(
 @UseGuards(AuthGuard)
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) { }
+  constructor(private readonly eventsService: EventsService) {}
 
   @Get(':eventId/bookings')
   list(

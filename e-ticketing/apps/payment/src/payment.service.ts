@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import {
   Invoice,
   InvoiceRepository,
+  UserPayDto,
   PaymentRequestRepository,
   PaymentStatus,
+  PayResultDto,
   Receipt,
   ReceiptRepository,
 } from 'libs/shared';
@@ -22,11 +24,15 @@ export class PaymentService {
     private readonly ticketingService: TicketingService,
   ) {}
 
-  async payBooking(request: {
-    invoiceNo: string;
-    paymentPhoneNo: string;
-    emailTo: string;
-  }): Promise<string> {
+  async payBooking(request: UserPayDto): Promise<string> {
+    try {
+      this.invoiceRepository.get(request.invoiceNo);
+    } catch {
+      throw new MicroServiceException(
+        `Invoice no ${request.invoiceNo} doesnt exist`,
+        RpcExceptionCode.PAYMENT_COLLECTION_EXCEPTION,
+      );
+    }
     const pay = await this.paymentRequestRepository.new({
       ...request,
       status: PaymentStatus.INPROGRESS,
@@ -41,11 +47,7 @@ export class PaymentService {
     return pay._id.toString();
   }
 
-  async payConfirmation(response: {
-    id: string;
-    amount: number;
-    thirdPartyId: string;
-  }) {
+  async payConfirmation(response: PayResultDto) {
     const request = await this.paymentRequestRepository.get(response.id);
     if (!request) {
       throw new MicroServiceException(
