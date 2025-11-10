@@ -6,6 +6,7 @@ import { RegisterModule } from './register/register.module';
 import { PaymentModule } from './payment/payment.module';
 import { BookingModule } from './booking/booking.module';
 import { ConfigModule } from '@nestjs/config';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     RegisterModule,
     PaymentModule,
     BookingModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

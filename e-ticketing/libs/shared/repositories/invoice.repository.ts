@@ -32,4 +32,8 @@ export class InvoiceRepository {
     }
     return invoice;
   }
+
+  findByBookings(bookingNo: string[]): Promise<InvoiceDocument[]> {
+    return this.invoiceModel.find({ bookingNo: { $in: bookingNo } }).exec();
+  }
 }

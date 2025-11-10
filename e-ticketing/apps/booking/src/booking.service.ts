@@ -19,7 +19,7 @@ export class BookingService {
     private readonly bookingRepository: BookingRepository,
     private readonly invoiceRepository: InvoiceRepository,
     @InjectConnection() private readonly connection: mongoose.Connection,
-  ) {}
+  ) { }
 
   async book(booking: UserBookingDto): Promise<BookingId> {
     const session = await this.connection.startSession();
@@ -77,5 +77,25 @@ export class BookingService {
   calculateBookingCost(seats: string[]) {
     const ticketPrice = 100;
     return seats.length * ticketPrice;
+  }
+
+  async get(userId: string, eventId: string): Promise<BookingId[]> {
+    const bookings = await this.bookingRepository.find(userId, eventId);
+    if (bookings.length == 0) {
+      return [];
+    }
+    const invoices = await this.invoiceRepository.findByBookings(
+      bookings.map((book) => book.bookingNo),
+    );
+    if (invoices.length == 0) {
+      return [];
+    }
+    const bookingMap = new Map(bookings.map(({ bookingNo, seats }) => [bookingNo, seats]))
+    return invoices.map((invoice) => ({
+      bookingNo: invoice.bookingNo,
+      invoiceNo: invoice.invoiceNo,
+      amount: invoice.amount,
+      seats: bookingMap.get(invoice.bookingNo) ?? [],
+    }));
   }
 }
