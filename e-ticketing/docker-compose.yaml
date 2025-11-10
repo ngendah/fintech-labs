@@ -1,11 +1,62 @@
 services:
-  mongodb:
+  mongo1:
     image: mongo:latest
-    container_name: mongodb
+    container_name: mongo1
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_REPLICA_SET_NAME: "rs0"
     volumes:
-      - mongo_data:/data/db
+      - mongo1_data:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - mongo-net
+    healthcheck:
+      test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  mongo2:
+    image: mongo:latest
+    container_name: mongo2
+    ports:
+    - "27018:27017"
+    environment:
+      MONGO_INITDB_REPLICA_SET_NAME: "rs0"
+    volumes:
+      - mongo2_data:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - mongo-net
+    healthcheck:
+      test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  init-container:
+    # FIXME: make configuration dynmanic and avoid hard-coded options
+    image: mongo:latest
+    container_name: init-container
+    networks:
+      - mongo-net
+    volumes:
+      - ./scripts:/init:Z
+    restart: 'no'
+    entrypoint: ['/init/replica-setup.sh']
+    depends_on:
+      - mongo1
+      - mongo2
+
+  nameresolver:
+    image: dvdarias/docker-hoster:latest
+    container_name: nameresolver
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:Z
+      - /etc/hosts:/tmp/hosts:Z
 
   nats:
     image: nats:2.12-alpine
@@ -14,6 +65,17 @@ services:
       - "4222:4222"  # client connections
       - "8222:8222"  # HTTP monitoring endpoint
       - "6222:6222"  # clustering port
+    healthcheck:
+      test: sh -c "nc -z localhost 8222 || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
 volumes:
-  mongo_data:
+  mongo1_data:
+  mongo2_data:
+
+networks:
+  mongo-net:
+
