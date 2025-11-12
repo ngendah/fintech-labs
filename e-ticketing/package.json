@@ -27,6 +27,7 @@
     "@nestjs/microservices": "^11.1.8",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/terminus": "^11.0.0",
     "bcrypt": "^6.0.0",
     "mongoose": "^8.19.0",
     "nats": "^2.29.3",

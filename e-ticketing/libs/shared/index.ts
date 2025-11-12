@@ -17,6 +17,7 @@ export * from './repositories/payment-request.repository';
 export * from './repositories/ticket.repository';
 export * from './modules/mongo.module';
 export * from './modules/json-web-token-module';
+export * from './modules/health-check/health-check.module';
 export * from './create-microservice';
 export * from './endpoints';
 export * from './constants';
