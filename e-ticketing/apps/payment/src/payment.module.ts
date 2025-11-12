@@ -4,6 +4,7 @@ import { PaymentService } from './payment.service';
 import {
   BookingRepository,
   BookingSchemaModule,
+  HealthCheckModule,
   InvoiceRepository,
   InvoiceSchemaModule,
   MongoModule,
@@ -19,6 +20,7 @@ import { TicketingService } from './ticketing.service';
 @Module({
   imports: [
     MongoModule,
+    HealthCheckModule,
     BookingSchemaModule,
     InvoiceSchemaModule,
     ReceiptSchemaModule,

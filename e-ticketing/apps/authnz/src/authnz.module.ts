@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthnzController } from './authnz.controller';
 import { AuthnzService } from './authnz.service';
 import {
+  HealthCheckModule,
   AuthnzRepository,
   JsonWebTokenModule,
   MongoModule,
@@ -13,6 +14,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot(),
     MongoModule,
+    HealthCheckModule,
     UserSchemaModule,
     JsonWebTokenModule,
   ],

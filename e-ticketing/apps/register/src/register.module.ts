@@ -3,6 +3,7 @@ import { RegisterController } from './register.controller';
 import { RegisterService } from './register.service';
 import {
   AuthnzRepository,
+  HealthCheckModule,
   JsonWebTokenModule,
   MongoModule,
   RegistrationRepository,
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot(),
     MongoModule,
+    HealthCheckModule,
     UserSchemaModule,
     JsonWebTokenModule,
   ],

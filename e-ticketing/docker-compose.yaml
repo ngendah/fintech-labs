@@ -1,16 +1,36 @@
+x-eticketing: &eticketing
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: eticketing:latest
+  networks:
+    - eticketing-net
+  environment:
+    JWT_SECRET: "my-secret"
+    MONGODB_URI: "mongodb://mongo1:27017,mongo2:27017/eticketing"
+    NATS_HOST: "nats"
+    NATS_PORT: "4222"
+    HEALTH_CHECK_PORT: "4000"
+  healthcheck:
+    test: ["CMD-SHELL", "curl -f http://localhost:4000/health || exit 1"]
+    interval: 5s
+    timeout: 5s
+    retries: 3
+    start_period: 5s
+
+---
+
 services:
   mongo1:
     image: mongo:latest
     container_name: mongo1
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_REPLICA_SET_NAME: "rs0"
     volumes:
       - mongo1_data:/data/db
     command: mongod --replSet rs0 --bind_ip_all
     networks:
-      - mongo-net
+      - eticketing-net
     healthcheck:
       test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
       interval: 5s
@@ -21,15 +41,13 @@ services:
   mongo2:
     image: mongo:latest
     container_name: mongo2
-    ports:
-    - "27018:27017"
     environment:
       MONGO_INITDB_REPLICA_SET_NAME: "rs0"
     volumes:
       - mongo2_data:/data/db
     command: mongod --replSet rs0 --bind_ip_all
     networks:
-      - mongo-net
+      - eticketing-net
     healthcheck:
       test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
       interval: 5s
@@ -42,7 +60,7 @@ services:
     image: mongo:latest
     container_name: init-container
     networks:
-      - mongo-net
+      - eticketing-net
     volumes:
       - ./scripts:/init:Z
     restart: 'no'
@@ -61,10 +79,8 @@ services:
   nats:
     image: nats:2.12-alpine
     container_name: nats
-    ports:
-      - "4222:4222"  # client connections
-      - "8222:8222"  # HTTP monitoring endpoint
-      - "6222:6222"  # clustering port
+    networks:
+      - eticketing-net
     healthcheck:
       test: sh -c "nc -z localhost 8222 || exit 1"
       interval: 5s
@@ -72,10 +88,38 @@ services:
       retries: 3
       start_period: 5s
 
+  api-gateway:
+    container_name: api-gateway
+    <<: *eticketing
+    command: ["nest", "start", "api-gateway"]
+    ports:
+      - 3000:3000
+
+  authnz-service:
+    container_name: authnz-service
+    <<: *eticketing
+    command: ["nest", "start", "authnz"]
+
+  booking-service:
+    container_name: booking-service
+    <<: *eticketing
+    command: ["nest", "start", "booking"]
+
+  payment-service:
+    container_name: payment-service
+    <<: *eticketing
+    command: ["nest", "start", "payment"]
+
+  register-service:
+    container_name: register-service
+    <<: *eticketing
+    command: ["nest", "start", "register"]
+
+---
+
 volumes:
   mongo1_data:
   mongo2_data:
 
 networks:
-  mongo-net:
-
+  eticketing-net:

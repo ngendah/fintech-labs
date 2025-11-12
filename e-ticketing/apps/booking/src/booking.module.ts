@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { BookingController } from './booking.controller';
 import { BookingService } from './booking.service';
 import {
+  HealthCheckModule,
   BookingRepository,
   BookingSchemaModule,
   InvoiceRepository,
@@ -10,7 +11,12 @@ import {
 } from 'libs/shared';
 
 @Module({
-  imports: [MongoModule, BookingSchemaModule, InvoiceSchemaModule],
+  imports: [
+    MongoModule,
+    HealthCheckModule,
+    BookingSchemaModule,
+    InvoiceSchemaModule,
+  ],
   controllers: [BookingController],
   providers: [BookingRepository, InvoiceRepository, BookingService],
 })
