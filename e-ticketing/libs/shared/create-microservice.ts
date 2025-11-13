@@ -61,7 +61,7 @@ export const createMicroserviceClientModule = (name: string) => {
       useFactory: async (config: ConfigService) => {
         const host = config.get(NATS_HOST, NATS_DEFAULT_HOST);
         const port = config.get<number>(NATS_PORT, NATS_DEFAULT_PORT);
-        const logger = new Logger(`createMicroserviceClientModule($name)`);
+        const logger = new Logger(`createMicroserviceClientModule(${name})`);
         const server = `nats://${host}:${port}`;
         logger.debug(`nats-server-url=${server}`);
         return {

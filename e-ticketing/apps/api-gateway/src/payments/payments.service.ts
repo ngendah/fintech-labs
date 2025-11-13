@@ -7,6 +7,7 @@ import {
   UserPayDto,
 } from 'libs/shared';
 import { Observable } from 'rxjs';
+import { rpcErrorInterceptor } from '../exception-filter';
 
 @Injectable()
 export class PaymentsService {
@@ -17,6 +18,8 @@ export class PaymentsService {
   }
 
   confirmation(payResult: PayResultDto) {
-    return this.client.send<void>(EndPoint.PAYMENT_RESULTS, payResult);
+    return this.client
+      .send<void>(EndPoint.PAYMENT_RESULTS, payResult)
+      .pipe(rpcErrorInterceptor());
   }
 }
