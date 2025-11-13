@@ -5,7 +5,11 @@ import {
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
-import { HealthCheck, HealthIndicatorService } from '@nestjs/terminus';
+import {
+  HealthCheck,
+  HealthCheckService,
+  HealthIndicatorService,
+} from '@nestjs/terminus';
 import {
   NATS_DEFAULT_HOST,
   NATS_DEFAULT_PORT,
@@ -19,22 +23,23 @@ const HEALTH_KEY = 'nats';
 export class HealthCheckController {
   private logger = new Logger(HealthCheckController.name);
   constructor(
-    private readonly configService: ConfigService,
+    private readonly config: ConfigService,
+    private health: HealthCheckService,
     private readonly healthIndicator: HealthIndicatorService,
   ) {}
 
   @Get()
   @HealthCheck()
   async check() {
-    return this.isHealthy(HEALTH_KEY);
+    return this.health.check([() => this.isHealthy(HEALTH_KEY)]);
   }
 
   async isHealthy(key: string) {
     const indicator = this.healthIndicator.check(key);
     let client: ClientProxy | null | undefined;
     try {
-      const host = this.configService.get(NATS_HOST, NATS_DEFAULT_HOST);
-      const port = this.configService.get(NATS_PORT, NATS_DEFAULT_PORT);
+      const host = this.config.get(NATS_HOST, NATS_DEFAULT_HOST);
+      const port = this.config.get(NATS_PORT, NATS_DEFAULT_PORT);
       client = ClientProxyFactory.create({
         transport: Transport.NATS,
         options: {

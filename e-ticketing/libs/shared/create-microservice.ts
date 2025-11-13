@@ -4,7 +4,7 @@ import {
   ClientsModule,
   Transport,
 } from '@nestjs/microservices';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { DynamicModule, ForwardReference, Logger, Type } from '@nestjs/common';
 import {
   NATS_DEFAULT_HOST,
@@ -24,24 +24,26 @@ export const createMicroServiceApp = async (
   name: string,
 ) => {
   const app = await NestFactory.create(module);
+  const logger = new Logger(`createMicroServiceApp(${name})`);
   app.connectMicroservice<AsyncMicroserviceOptions>({
     useFactory: (config: ConfigService) => {
       const host = config.get(NATS_HOST, NATS_DEFAULT_HOST);
       const port = config.get<number>(NATS_PORT, NATS_DEFAULT_PORT);
+      const server = `nats://${host}:${port}`;
+      logger.debug(`nats-server-url=${server}`);
       return {
         transport: Transport.NATS,
         options: {
           queue: name,
-          servers: [`nats://${host}:${port}`],
+          servers: [server],
         },
       };
     },
     inject: [ConfigService],
   });
-  const healthCheckPort = process.env['HEALTH_CHECK_PORT'] ?? 4000;
+  const healthCheckPort = process.env['HEALTH_PORT'] ?? 3000;
   return {
     listen: async () => {
-      const logger = new Logger(name);
       const [service, server] = await Promise.all([
         app.startAllMicroservices(),
         app.listen(healthCheckPort),
@@ -55,16 +57,18 @@ export const createMicroServiceApp = async (
 export const createMicroserviceClientModule = (name: string) => {
   return ClientsModule.registerAsync([
     {
-      imports: [ConfigModule],
       name,
       useFactory: async (config: ConfigService) => {
         const host = config.get(NATS_HOST, NATS_DEFAULT_HOST);
         const port = config.get<number>(NATS_PORT, NATS_DEFAULT_PORT);
+        const logger = new Logger(`createMicroserviceClientModule($name)`);
+        const server = `nats://${host}:${port}`;
+        logger.debug(`nats-server-url=${server}`);
         return {
           transport: Transport.NATS,
           options: {
             queue: name,
-            servers: [`nats://${host}:${port}`],
+            servers: [server],
           },
         };
       },

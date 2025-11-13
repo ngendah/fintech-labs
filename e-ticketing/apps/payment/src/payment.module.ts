@@ -16,9 +16,11 @@ import {
   TicketSchemaModule,
 } from 'libs/shared';
 import { TicketingService } from './ticketing.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     MongoModule,
     HealthCheckModule,
     BookingSchemaModule,

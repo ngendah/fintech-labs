@@ -9,9 +9,11 @@ import {
   InvoiceSchemaModule,
   MongoModule,
 } from 'libs/shared';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     MongoModule,
     HealthCheckModule,
     BookingSchemaModule,
