@@ -5,6 +5,7 @@ import {
   User,
   UserDto,
 } from 'libs/shared';
+import { TokenDto } from 'libs/shared/dtos/token.dto';
 import {
   MicroServiceException,
   RpcExceptionCode,
@@ -17,7 +18,7 @@ export class RegisterService {
     private readonly authnzRepository: AuthnzRepository,
   ) {}
 
-  async register(user: UserDto): Promise<string> {
+  async register(user: UserDto): Promise<TokenDto> {
     if (await this.registrationRepository.get(user.email)) {
       throw new MicroServiceException(
         `User already exists`,

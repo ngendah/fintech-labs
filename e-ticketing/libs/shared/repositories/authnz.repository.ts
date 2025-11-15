@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { MicroServiceException, RpcExceptionCode } from '../rpc-exception';
+import { TokenDto } from '../dtos/token.dto';
 
 @Injectable()
 export class AuthnzRepository {
@@ -14,7 +15,7 @@ export class AuthnzRepository {
     private jwtService: JwtService,
   ) {}
 
-  async authn(email: string, password: string): Promise<string> {
+  async authn(email: string, password: string): Promise<TokenDto> {
     const user = await this.userModel.findOne({ email }).exec();
     if (!user) {
       throw new MicroServiceException(
@@ -30,7 +31,8 @@ export class AuthnzRepository {
       );
     }
     const payload = { sub: user._id };
-    return this.jwtService.signAsync(payload);
+    const token = this.jwtService.sign(payload);
+    return { token };
   }
 
   async verifyToken(token: string): Promise<UserDocument> {
