@@ -1,22 +1,43 @@
-Getting Started:
-=======
-1. Ensure docker is installed.
-2. run the load script
+# E-Ticketing Micro-Services
+
+An E-Ticketing micro-service application, demonstrating how to implement a low-latency, high-load resilient application.
+
+## Features
+
+* NestJS micro-services architecture with NATS.
+* Include main e-ticketing features, such as registration, sign-in, event booking, payments.
+* All micro-services have been containerized.
+
+----
+
+## Getting started
+
+1. **Install Docker:** Ensure you have [Docker](https://docs.docker.com/) installed.
+
+2. **Build and Run:**
+    Build the Docker image and run the service by running the script.
+
 ```sh
 ./load-test.sh
 ```
 
+3. **Clean up**
 
-Sample Output:
-=======
+```sh
+sudo docker compose down --volumes
 ```
-█ THRESHOLDS 
+
+
+### Results and sample Output:
+
+```
+ THRESHOLDS 
 
     http_req_duration
     ✓ 'p(95)<100' p(95)=93.22ms
 
 
-  █ TOTAL RESULTS 
+   TOTAL RESULTS 
 
     checks_total.......: 878     14.142035/s
     checks_succeeded...: 100.00% 878 out of 878

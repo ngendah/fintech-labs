@@ -5,9 +5,9 @@ A NodeJS(NestJS/Prisma) API that simulates automated recurring savings logic wit
 ## Features
 
 * Create savings schedules via API.
-* Bank integration and use of USSD triggers.
+* Equity Bank integration and use of USSD triggers.
 * Simulate recurring deposits.
-* Local or Kubernetes Deployment
+* Docker or Kubernetes Deployment
 
 ----
 
