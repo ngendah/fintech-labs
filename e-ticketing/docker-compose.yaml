@@ -1,0 +1,134 @@
+x-eticketing: &eticketing
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: eticketing:latest
+  deploy:
+    resources:
+      limits:
+        memory: 400M
+  environment:
+    JWT_SECRET: "my-secret"
+    MONGODB_URI: "mongodb://mongo1:27017,mongo2:27017/eticketing"
+    NATS_HOST: "nats"
+    NATS_PORT: "4222"
+  healthcheck:
+    test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+    interval: 5s
+    timeout: 10s
+    retries: 5
+    start_period: 10s
+
+---
+
+services:
+  mongo1:
+    image: mongo:latest
+    container_name: mongo1
+    environment:
+      MONGO_INITDB_REPLICA_SET_NAME: "rs0"
+    volumes:
+      - mongo1_data:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 300M
+    healthcheck:
+      test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  mongo2:
+    image: mongo:latest
+    container_name: mongo2
+    environment:
+      MONGO_INITDB_REPLICA_SET_NAME: "rs0"
+    volumes:
+      - mongo2_data:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 300M
+    healthcheck:
+      test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  init-container:
+    # FIXME: make configuration dynmanic and avoid hard-coded options
+    image: mongo:latest
+    container_name: init-container
+    volumes:
+      - ./scripts:/init:Z
+    restart: 'no'
+    entrypoint: ['/init/replica-setup.sh']
+    depends_on:
+      - mongo1
+      - mongo2
+
+  nameresolver:
+    image: dvdarias/docker-hoster:latest
+    container_name: nameresolver
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:Z
+      - /etc/hosts:/tmp/hosts:Z
+
+  nats:
+    image: nats:2.12-alpine
+    container_name: nats
+    deploy:
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 500M
+        reservations:
+          cpus: '0.10'
+          memory: 200M
+    healthcheck:
+      test: sh -c "nc -z localhost 8222 || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  api-gateway:
+    container_name: api-gateway
+    <<: *eticketing
+    command: ["npm", "run", "start", "api-gateway"]
+    ports:
+      - 3000:3000
+
+  authnz-service:
+    container_name: authnz-service
+    <<: *eticketing
+    command: ["npm", "run", "start", "authnz"]
+
+  booking-service:
+    container_name: booking-service
+    <<: *eticketing
+    command: ["npm", "run", "start", "booking"]
+
+  payment-service:
+    container_name: payment-service
+    <<: *eticketing
+    command: ["npm", "run", "start", "payment"]
+
+  register-service:
+    container_name: register-service
+    <<: *eticketing
+    command: ["npm", "run", "start", "register"]
+
+---
+
+volumes:
+  mongo1_data:
+  mongo2_data:
+

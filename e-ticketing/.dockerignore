@@ -1,0 +1,13 @@
+# Directories
+.git
+dist
+node_modules
+# Files
+.dockerignore
+.env
+.gitignore
+.prettierrc
+Dockerfile
+docker-compose.yaml
+env.sample
+*.txt

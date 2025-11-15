@@ -1,0 +1,20 @@
+import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+
+@Schema()
+export class Invoice {
+  @Prop({ required: true, unique: true, index: true })
+  invoiceNo: string;
+
+  @Prop({ reqired: true })
+  amount: number;
+
+  @Prop({ required: true, unique: true, index: true })
+  bookingNo: string;
+}
+
+export type InvoiceDocument = HydratedDocument<Invoice>;
+export const InvoiceSchema = SchemaFactory.createForClass(Invoice);
+export const InvoiceSchemaModule = MongooseModule.forFeature([
+  { name: Invoice.name, schema: InvoiceSchema },
+]);
