@@ -10,3 +10,4 @@ node_modules
 Dockerfile
 docker-compose.yaml
 env.sample
+*.txt

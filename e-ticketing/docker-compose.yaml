@@ -6,11 +6,7 @@ x-eticketing: &eticketing
   deploy:
     resources:
       limits:
-        cpus: '0.20'
         memory: 400M
-      reservations:
-        cpus: '0.10'
-        memory: 200M
   environment:
     JWT_SECRET: "my-secret"
     MONGODB_URI: "mongodb://mongo1:27017,mongo2:27017/eticketing"
@@ -37,11 +33,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.30'
-          memory: 500M
-        reservations:
-          cpus: '0.15'
-          memory: 200M
+          cpus: '2.0'
+          memory: 300M
     healthcheck:
       test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
       interval: 5s
@@ -60,11 +53,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.30'
-          memory: 500M
-        reservations:
-          cpus: '0.15'
-          memory: 200M
+          cpus: '2.0'
+          memory: 300M
     healthcheck:
       test: sh -c "mongosh --eval 'db.adminCommand(\"ping\")' || exit 1"
       interval: 5s
