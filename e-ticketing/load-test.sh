@@ -1,13 +1,13 @@
-sudo docker compose down && sudo docker compose up -d --build &
+sudo docker compose down --volumes && sudo docker compose up -d --build &
 for i in {1..40}; do
   printf "."
   sleep 1
 done
 echo ""
-sudo docker run --rm --network e-ticketing_default -i grafana/k6:1.2.2 run - <"load-testing/script.js" &
-: >stats.txt
-end=$((SECONDS + 20))
-while [ $SECONDS -lt $end ]; do
-  sudo docker compose stats --no-stream | tee -a stats.txt
-  sleep 0.2
-done
+sudo docker run --rm --network e-ticketing_default -v $(pwd)/load-testing:/scripts -i grafana/k6:1.2.2 run /scripts/script.js &
+pid=$!
+wait $pid
+if [ $? -ne 0 ]; then
+  echo "Docker command failed"
+  exit 1
+fi
