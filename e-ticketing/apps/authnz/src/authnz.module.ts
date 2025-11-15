@@ -7,6 +7,7 @@ import {
   JsonWebTokenModule,
   MongoModule,
   UserSchemaModule,
+  UserCacheModule,
 } from 'libs/shared';
 import { ConfigModule } from '@nestjs/config';
 
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({ isGlobal: true }),
     MongoModule,
     HealthCheckModule,
+    UserCacheModule,
     UserSchemaModule,
     JsonWebTokenModule,
   ],

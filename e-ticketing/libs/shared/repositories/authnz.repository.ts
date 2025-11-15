@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { MicroServiceException, RpcExceptionCode } from '../rpc-exception';
 import { TokenDto } from '../dtos/token.dto';
+import { UserCacheService } from '../modules/user-cache/user-cache.service';
 
 @Injectable()
 export class AuthnzRepository {
@@ -13,16 +14,27 @@ export class AuthnzRepository {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
+    private userCacheService: UserCacheService,
   ) {}
 
-  async authn(email: string, password: string): Promise<TokenDto> {
-    const user = await this.userModel.findOne({ email }).exec();
+  async userByEmail(email: string): Promise<UserDocument> {
+    let user: UserDocument | null | undefined =
+      await this.userCacheService.get(email);
     if (!user) {
-      throw new MicroServiceException(
-        `User not found`,
-        RpcExceptionCode.INVALID_CREDENTIALS,
-      );
+      user = await this.userModel.findOne({ email }).exec();
+      if (!user) {
+        throw new MicroServiceException(
+          `User not found`,
+          RpcExceptionCode.INVALID_CREDENTIALS,
+        );
+      }
+      this.userCacheService.set(user);
     }
+    return user;
+  }
+
+  async authn(email: string, password: string): Promise<TokenDto> {
+    const user = await this.userByEmail(email);
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       throw new MicroServiceException(
