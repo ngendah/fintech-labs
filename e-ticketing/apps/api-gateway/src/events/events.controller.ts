@@ -5,9 +5,14 @@ import {
   Get,
   Param,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '../authnz/authnz.guard';
-import { BookingId, type UserDocument } from 'libs/shared';
+import {
+  BookingId,
+  HttpPerformanceInterceptor,
+  type UserDocument,
+} from 'libs/shared';
 import { Observable } from 'rxjs';
 import { EventsService } from './events.service';
 
@@ -24,6 +29,7 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get(':eventId/bookings')
+  @UseInterceptors(HttpPerformanceInterceptor)
   list(
     @Param('eventId') eventId: string,
     @User() user: UserDocument,

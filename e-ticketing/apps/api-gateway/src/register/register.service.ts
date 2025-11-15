@@ -7,7 +7,7 @@ import { TokenDto } from 'libs/shared/dtos/token.dto';
 
 @Injectable()
 export class RegisterService {
-  constructor(@Inject(REGISTER_SERVICE) private readonly client: ClientNats) { }
+  constructor(@Inject(REGISTER_SERVICE) private readonly client: ClientNats) {}
 
   register(user: UserDto): Observable<TokenDto> {
     return this.client
