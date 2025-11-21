@@ -6,7 +6,11 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { MicroServiceException, RpcExceptionCode } from '../rpc-exception';
 import { TokenDto } from '../dtos/token.dto';
-import { UserCacheService } from '../modules/user-cache/user-cache.service';
+import {
+  CacheByEmail,
+  CacheById,
+  UserCacheService,
+} from '../modules/user-cache/user-cache.service';
 
 @Injectable()
 export class AuthnzRepository {
@@ -17,10 +21,25 @@ export class AuthnzRepository {
     private userCacheService: UserCacheService,
   ) {}
 
-  async userByEmail(email: string): Promise<UserDocument> {
-    let user: UserDocument | null | undefined =
-      await this.userCacheService.get(email);
+  async userById(id: string): Promise<UserDocument> {
+    const cache = this.userCacheService.cacheBy(CacheById);
+    let user: UserDocument | null | undefined = await cache.get(id);
     if (!user) {
+      this.logger.debug(`id cache miss ${id}`);
+      user = await this.userModel.findById(id);
+      if (!user) {
+        throw new Error(`User not found`);
+      }
+      cache.set(user);
+    }
+    return user;
+  }
+
+  async userByEmail(email: string): Promise<UserDocument> {
+    const cache = this.userCacheService.cacheBy(CacheByEmail);
+    let user: UserDocument | null | undefined = await cache.get(email);
+    if (!user) {
+      this.logger.debug(`email cache miss ${email}`);
       user = await this.userModel.findOne({ email }).exec();
       if (!user) {
         throw new MicroServiceException(
@@ -28,7 +47,7 @@ export class AuthnzRepository {
           RpcExceptionCode.INVALID_CREDENTIALS,
         );
       }
-      this.userCacheService.set(user);
+      cache.set(user);
     }
     return user;
   }
@@ -53,11 +72,7 @@ export class AuthnzRepository {
       if (!payload['sub']) {
         throw new Error(`Token does not have subject field`);
       }
-      const user = await this.userModel.findById(payload['sub']);
-      if (!user) {
-        throw new Error(`User not found`);
-      }
-      return user;
+      return this.userById(payload['sub']);
     } catch (error) {
       this.logger.error(error);
       throw new MicroServiceException(
