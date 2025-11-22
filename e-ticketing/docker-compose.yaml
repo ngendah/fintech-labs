@@ -10,8 +10,7 @@ x-eticketing: &eticketing
   environment:
     JWT_SECRET: "my-secret"
     MONGODB_URI: "mongodb://mongo1:27017,mongo2:27017,mongo3:27017/eticketing"
-    NATS_HOST: "nats"
-    NATS_PORT: "4222"
+    NATS_URI: "nats://nats:4222,nats://nats2:4222"
   healthcheck:
     test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
     interval: 5s
@@ -110,6 +109,7 @@ services:
         reservations:
           cpus: '0.10'
           memory: 200M
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --http_port 8222"
     healthcheck:
       test: sh -c "nc -z localhost 8222 || exit 1"
       interval: 5s
@@ -117,6 +117,24 @@ services:
       retries: 3
       start_period: 5s
 
+  nats2:
+    image: nats:2.12-alpine
+    container_name: nats2
+    deploy:
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 500M
+        reservations:
+          cpus: '0.10'
+          memory: 200M
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --routes=nats://nats:6222 --http_port 8222"
+    healthcheck:
+      test: sh -c "nc -z localhost 8222 || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   api-gateway:
     container_name: api-gateway
