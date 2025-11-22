@@ -8,3 +8,5 @@ COPY --chown=fintech-labs:fintech-labs package.json package-lock.json .
 RUN npm i
 EXPOSE 3000 4000
 COPY --chown=fintech-labs:fintech-labs . .
+
+# TODO: multi-builds for production deploment
