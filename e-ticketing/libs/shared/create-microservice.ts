@@ -6,12 +6,7 @@ import {
 } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { DynamicModule, ForwardReference, Logger, Type } from '@nestjs/common';
-import {
-  NATS_DEFAULT_HOST,
-  NATS_DEFAULT_PORT,
-  NATS_HOST,
-  NATS_PORT,
-} from './constants';
+import { NATS_DEFAULT_URI, NATS_URI } from './constants';
 
 type IEntryNestModule =
   | Type<any>
@@ -27,15 +22,14 @@ export const createMicroServiceApp = async (
   const logger = new Logger(`createMicroServiceApp(${name})`);
   app.connectMicroservice<AsyncMicroserviceOptions>({
     useFactory: (config: ConfigService) => {
-      const host = config.get(NATS_HOST, NATS_DEFAULT_HOST);
-      const port = config.get<number>(NATS_PORT, NATS_DEFAULT_PORT);
-      const server = `nats://${host}:${port}`;
-      logger.debug(`nats-server-url=${server}`);
+      const natsUri = config.get<string>(NATS_URI, NATS_DEFAULT_URI);
+      const servers = natsUri.split(',');
+      logger.debug(`nats-servers: ${servers}`);
       return {
         transport: Transport.NATS,
         options: {
           queue: name,
-          servers: [server],
+          servers,
         },
       };
     },
@@ -59,16 +53,15 @@ export const createMicroserviceClientModule = (name: string) => {
     {
       name,
       useFactory: async (config: ConfigService) => {
-        const host = config.get(NATS_HOST, NATS_DEFAULT_HOST);
-        const port = config.get<number>(NATS_PORT, NATS_DEFAULT_PORT);
         const logger = new Logger(`createMicroserviceClientModule(${name})`);
-        const server = `nats://${host}:${port}`;
-        logger.debug(`nats-server-url=${server}`);
+        const natsUri = config.get<string>(NATS_URI, NATS_DEFAULT_URI);
+        const servers = natsUri.split(',');
+        logger.debug(`nats-servers: ${servers}`);
         return {
           transport: Transport.NATS,
           options: {
             queue: name,
-            servers: [server],
+            servers,
           },
         };
       },

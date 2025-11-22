@@ -10,12 +10,7 @@ import {
   HealthCheckService,
   HealthIndicatorService,
 } from '@nestjs/terminus';
-import {
-  NATS_DEFAULT_HOST,
-  NATS_DEFAULT_PORT,
-  NATS_HOST,
-  NATS_PORT,
-} from 'libs/shared/constants';
+import { NATS_DEFAULT_URI, NATS_URI } from 'libs/shared/constants';
 
 const HEALTH_KEY = 'nats';
 
@@ -38,12 +33,12 @@ export class HealthCheckController {
     const indicator = this.healthIndicator.check(key);
     let client: ClientProxy | null | undefined;
     try {
-      const host = this.config.get(NATS_HOST, NATS_DEFAULT_HOST);
-      const port = this.config.get(NATS_PORT, NATS_DEFAULT_PORT);
+      const natsUri = this.config.get<string>(NATS_URI, NATS_DEFAULT_URI);
+      const servers = natsUri.split(',');
       client = ClientProxyFactory.create({
         transport: Transport.NATS,
         options: {
-          servers: [`nats://${host}:${port}`],
+          servers,
         },
       });
       await client?.connect();
